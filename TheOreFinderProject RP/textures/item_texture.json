@@ -1,0 +1,9 @@
+{
+  "texture_data": {
+    "diamond_ore_goggles": {
+      "textures": "textures/items/diamond_ore_goggles.png"
+    }
+  },
+  "resource_pack_name": "",
+  "texture_name": "atlas.items"
+}

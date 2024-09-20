@@ -1,0 +1,24 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "An addon that adds an ore finder item that highlights nearby ores - by The Nether Monk",
+    "name": "The Ore Finder Project",
+    "uuid": "f7788c8b-de30-433b-9268-ee10e91e79d2",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 20]
+  },
+  "modules": [
+    {
+      "description": "An addon that adds an ore finder item that highlights nearby ores - by The Nether Monk",
+      "type": "resources",
+      "uuid": "0ffec8e6-af74-4e40-9f23-5d6282c20d0a",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "18cac9cd-f79c-40f4-a82a-1abac0da1d81",
+      "version": [1, 0, 0]
+    }
+  ]
+}

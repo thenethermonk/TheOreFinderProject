@@ -1,0 +1,10 @@
+{
+  "materials": {
+    "version": "1.0.0",
+    "entity_noblock:entity_nocull": {
+      "+states": [
+        "DisableDepthTest"
+      ]
+    }
+  }
+}

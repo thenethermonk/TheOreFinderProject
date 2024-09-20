@@ -1,0 +1,28 @@
+{
+  "format_version": "1.12",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "recipes_941b50b9"
+    },
+    "tags": ["crafting_table"],
+    "pattern": ["BAB", "ACA", "BAB"],
+    "key": {
+      "A": {
+        "item": "minecraft:diamond",
+        "data": 0
+      },
+      "B": {
+        "item": "minecraft:leather",
+        "data": 0
+      },
+      "C": {
+        "item": "minecraft:ender_eye",
+        "data": 0
+      }
+    },
+    "result": {
+      "item": "the_ore_finder_project:diamond_ore_goggles",
+      "count": 1
+    }
+  }
+}
