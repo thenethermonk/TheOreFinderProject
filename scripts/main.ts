@@ -17,11 +17,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         const pos = arg.block.location
         // I would love to find a way to summon an entity without using the runCommand, but this will work for now
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)
-        if (
-          entlist.find(
-            (e) => e.typeId === "the_ore_finder_project:diamond_ore_entity"
-          ) == undefined
-        ) {
+        if (entlist.find((e) => e.typeId === placeholder_ore) == undefined) {
           pos.x += 0.5
           //pos.y += 0.5 // only uncomment this to make the placholder poke out the top of the ore, used for testing material
           pos.z += 0.5

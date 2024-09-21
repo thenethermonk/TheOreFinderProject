@@ -2,14 +2,14 @@
   "format_version": "1.10.0",
   "minecraft:attachable": {
     "description": {
-      "identifier": "the_ore_finder_project:diamond_ore_goggles",
+      "identifier": "the_ore_finder_project:emerald_ore_goggles",
       "render_controllers": ["controller.render.armor"],
       "materials": {
         "default": "entity_alphatest",
         "enchanted": "entity_alphatest_glint"
       },
       "textures": {
-        "default": "textures/entity/attachable/diamond_ore_goggles",
+        "default": "textures/entity/attachable/emerald_ore_goggles",
         "enchanted": "textures/misc/enchanted_item_glint"
       },
       "geometry": {

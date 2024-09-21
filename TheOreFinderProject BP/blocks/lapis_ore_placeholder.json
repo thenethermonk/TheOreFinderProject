@@ -2,7 +2,7 @@
   "format_version": "1.21.20",
   "minecraft:block": {
     "description": {
-      "identifier": "the_ore_finder_project:deepslate_diamond_ore_placeholder"
+      "identifier": "the_ore_finder_project:lapis_ore_placeholder"
     },
     "components": {
       "minecraft:destructible_by_mining": false,

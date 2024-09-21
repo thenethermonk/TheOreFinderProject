@@ -1,7 +1,37 @@
 {
   "texture_data": {
+    "ancient_debris_goggles": {
+      "textures": "textures/items/ancient_debris_goggles.png"
+    },
+    "budding_amethyst_goggles": {
+      "textures": "textures/items/budding_amethyst_goggles.png"
+    },
+    "coal_ore_goggles": {
+      "textures": "textures/items/coal_ore_goggles.png"
+    },
+    "copper_ore_goggles": {
+      "textures": "textures/items/copper_ore_goggles.png"
+    },
     "diamond_ore_goggles": {
       "textures": "textures/items/diamond_ore_goggles.png"
+    },
+    "emerald_ore_goggles": {
+      "textures": "textures/items/emerald_ore_goggles.png"
+    },
+    "gold_ore_goggles": {
+      "textures": "textures/items/gold_ore_goggles.png"
+    },
+    "iron_ore_goggles": {
+      "textures": "textures/items/iron_ore_goggles.png"
+    },
+    "lapis_ore_goggles": {
+      "textures": "textures/items/lapis_ore_goggles.png"
+    },
+    "quartz_ore_goggles": {
+      "textures": "textures/items/quartz_ore_goggles.png"
+    },
+    "redstone_ore_goggles": {
+      "textures": "textures/items/redstone_ore_goggles.png"
     }
   },
   "resource_pack_name": "",
