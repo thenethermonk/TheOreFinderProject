@@ -5,50 +5,7 @@
       "identifier": "the_ore_finder_project:emerald_ore_entity",
       "runtime_identifier": "minecraft:snowball",
       "is_spawnable": false,
-      "is_summonable": true,
-      "is_experimental": false,
-      "scripts": { "animate": ["despawn"] },
-      "animations": {
-        "despawn": "controller.animation.despawn"
-      }
-    },
-    "component_groups": {
-      "despawn": {
-        "minecraft:mark_variant": {
-          "value": 60
-        }
-      },
-      "minecraft:eclosion": {
-        "minecraft:health": {
-          "value": 999,
-          "max": 999
-        }
-      }
-    },
-
-    "components": {
-      "minecraft:timer": {
-        "time": 4.95,
-        "time_down_event": {
-          "event": "despawn"
-        }
-      },
-      "minecraft:health": {
-        "value": 1000,
-        "max": 1000
-      },
-      "minecraft:collision_box": {
-        "height": 0,
-        "width": 0
-      }
-    },
-
-    "events": {
-      "despawn": {
-        "add": {
-          "component_groups": ["despawn"]
-        }
-      }
+      "is_summonable": true
     }
   }
 }

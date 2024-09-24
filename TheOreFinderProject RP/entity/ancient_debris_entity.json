@@ -18,11 +18,7 @@
       "scripts": {
         "animate": ["new"]
       },
-      "render_controllers": ["controller.render.default"],
-      "spawn_egg": {
-        "texture": "natura_pylon",
-        "texture_index": 0
-      }
+      "render_controllers": ["controller.render.default"]
     }
   }
 }

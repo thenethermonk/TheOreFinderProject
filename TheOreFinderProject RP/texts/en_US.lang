@@ -1,1 +1,14 @@
+item.the_ore_finder_project:ancient_debris_goggles=Ancient Debris Goggles
+item.the_ore_finder_project:budding_amethyst_goggles=Amethyst Goggles
+item.the_ore_finder_project:coal_ore_goggles=Coal Ore Goggles
+item.the_ore_finder_project:copper_ore_goggles=Copper Ore Goggles
 item.the_ore_finder_project:diamond_ore_goggles=Diamond Ore Goggles
+item.the_ore_finder_project:emerald_ore_goggles=Emerald Ore Goggles
+item.the_ore_finder_project:gold_ore_goggles=Gold Ore Goggles
+item.the_ore_finder_project:iron_ore_goggles=Iron Ore Goggles
+item.the_ore_finder_project:lapis_ore_goggles=Lapis Ore Goggles
+item.the_ore_finder_project:quartz_ore_goggles=Quartz Ore Goggles
+item.the_ore_finder_project:redstone_ore_goggles=Redstone Ore Goggles
+
+item.the_ore_finder_project:overworld_goggles=Overworld Ore Goggles
+item.the_ore_finder_project:universal_goggles=Universal Goggles

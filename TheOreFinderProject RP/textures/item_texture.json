@@ -1,5 +1,23 @@
 {
+  "resource_pack_name": "the_ore_finder_project",
   "texture_data": {
+    "ore_goggles": {
+      "textures": [
+        "textures/items/ancient_debris_goggles.png",
+        "textures/items/budding_amethyst_goggles",
+        "textures/items/coal_ore_goggles.png",
+        "textures/items/copper_ore_goggles.png",
+        "textures/items/diamond_ore_goggles.png",
+        "textures/items/emerald_ore_goggles.png",
+        "textures/items/gold_ore_goggles.png",
+        "textures/items/iron_ore_goggles.png",
+        "textures/items/lapis_ore_goggles.png",
+        "textures/items/quartz_ore_goggles.png",
+        "textures/items/redstone_ore_goggles.png",
+        "textures/items/overworld_goggles.png",
+        "textures/items/universal_goggles.png"
+      ]
+    },
     "ancient_debris_goggles": {
       "textures": "textures/items/ancient_debris_goggles.png"
     },
@@ -32,8 +50,13 @@
     },
     "redstone_ore_goggles": {
       "textures": "textures/items/redstone_ore_goggles.png"
+    },
+    "overworld_goggles": {
+      "textures": "textures/items/overworld_goggles.png"
+    },
+    "universal_goggles": {
+      "textures": "textures/items/universal_goggles.png"
     }
   },
-  "resource_pack_name": "",
   "texture_name": "atlas.items"
 }

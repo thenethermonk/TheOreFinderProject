@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:block": {
+    "description": {
+      "identifier": "the_ore_finder_project:lit_deepslate_redstone_ore_placeholder"
+    },
+    "components": {
+      "minecraft:destructible_by_mining": false,
+      "minecraft:custom_components": [
+        "the_ore_finder_project:ore_finder_component"
+      ]
+    }
+  }
+}
