@@ -1,0 +1,28 @@
+{
+  "format_version": "1.12",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "the_ore_finder_project:budding_amethyst_goggles_recipi"
+    },
+    "tags": ["crafting_table"],
+    "pattern": ["BAB", "ACA", "BAB"],
+    "key": {
+      "A": {
+        "item": "minecraft:amethyst_shard",
+        "data": 0
+      },
+      "B": {
+        "item": "minecraft:leather",
+        "data": 0
+      },
+      "C": {
+        "item": "minecraft:ender_eye",
+        "data": 0
+      }
+    },
+    "result": {
+      "item": "the_ore_finder_project:budding_amethyst_goggles",
+      "count": 1
+    }
+  }
+}
