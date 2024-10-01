@@ -1,0 +1,31 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.vanilla_indicator": {
+      "arrays": {
+        "textures": {
+          "Array.skins": [
+            "Texture.ancient_debris",
+            "Texture.budding_amethyst",
+            "Texture.coal_ore",
+            "Texture.copper_ore",
+            "Texture.diamond_ore",
+            "Texture.emerald_ore",
+            "Texture.gold_ore",
+            "Texture.iron_ore",
+            "Texture.lapis_ore",
+            "Texture.quartz_ore",
+            "Texture.redstone_ore"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "material.default"
+        }
+      ],
+      "textures": ["Array.skins[q.variant]"]
+    }
+  }
+}

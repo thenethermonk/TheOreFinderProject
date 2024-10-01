@@ -8,7 +8,9 @@
         "strict": true,
         "skipLibCheck": true,
         "rootDir": "./scripts",
-        "outDir":"./TheOreFinderProject BP/scripts"
+        "outDir":"./TheOreFinderProject BP/scripts",
+        "removeComments": true,
+        
     },
     "exclude": [
         "node_ampules"

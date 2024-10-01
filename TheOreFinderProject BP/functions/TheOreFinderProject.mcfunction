@@ -195,88 +195,74 @@ execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s
 execute as @e[tag=visible] at @s run tag @s remove visible
 
 # tag the ancient debris entities visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:ancient_debris_goggles}] at @s run tag @e[type=the_ore_finder_project:ancient_debris_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:ancient_debris_goggles}] at @s run tag @e[type=the_ore_finder_project:ancient_debris_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:ancient_debris_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:ancient_debris_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:ancient_debris_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=ancient_debris, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:ancient_debris_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=ancient_debris, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # budding amethyst
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:budding_amethyst_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:budding_amethyst_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:budding_amethyst_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:budding_amethyst_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=budding_amethyst, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:budding_amethyst_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=budding_amethyst, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # coal
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:coal_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:coal_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:coal_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:coal_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=coal_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:coal_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=coal_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # copper
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:copper_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:copper_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:copper_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:copper_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=copper_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:copper_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=copper_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # diamond
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:diamond_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:diamond_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:diamond_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:diamond_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=diamond_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:diamond_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=diamond_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # emerald
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:emerald_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:emerald_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:emerald_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:emerald_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=emerald_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:emerald_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=emerald_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # gold
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:gold_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:gold_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:gold_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:gold_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=gold_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:gold_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=gold_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # iron
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:iron_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:iron_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:iron_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:iron_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=iron_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:iron_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=iron_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # lapis
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:lapis_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:lapis_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:lapis_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:lapis_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=lapis_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:lapis_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=lapis_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # quartz
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:quartz_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:quartz_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:quartz_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:quartz_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:quartz_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:quartz_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:quartz_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=quartz_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:quartz_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=quartz_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 # redstone
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:redstone_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:redstone_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
-execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:redstone_ore_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:redstone_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=redstone_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:redstone_ore_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=redstone_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+
+#overworld
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=ancient_debris, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=ancient_debris, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=budding_amethyst, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=budding_amethyst, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=coal_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=coal_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=copper_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=copper_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=diamond_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=diamond_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=emerald_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=emerald_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=gold_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=gold_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=iron_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=iron_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=lapis_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=lapis_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=redstone_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=redstone_ore, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+
+#universal - don't need to see tag, as universal does ALL
+execute as @a[hasitem={location=slot.weapon.mainhand, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
+execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] at @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, x=~-16, dx=31, y=~-16, dy=31, z=~-16, dz=31] add visible
 
 
 # night vision
@@ -284,8 +270,8 @@ execute as @e[tag=night_vision] at @s run tag @s remove night_vision
 execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:overworld_goggles}] run tag @s add night_vision
 execute as @a[hasitem={location=slot.armor.head, item=the_ore_finder_project:universal_goggles}] run tag @s add night_vision
 
-execute as @a at @s unless entity @s[tag=night_vision] run effect @s night_vision 0
-effect @a[tag=night_vision] night_vision 30 1 true
+#execute as @a at @s unless entity @s[tag=night_vision] run effect @s night_vision 0
+effect @a[tag=night_vision] night_vision 30 0 true
 
 
 # let there be light - still in work

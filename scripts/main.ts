@@ -7,31 +7,43 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
       onPlace(arg) {
         // get the location of the current block
         let pos = arg.block.location
-        let placeholder_ore = arg.block.type.id
+        let entity_variant = arg.block.type.id
         let previous_ore = arg.block.type.id
+        let just_the_name = arg.block.type.id
+
+        // pull out the ore name, just the ore name
+        just_the_name = just_the_name.replace("the_ore_finder_project:", "")
+        just_the_name = just_the_name.replace("_placeholder", "")
+        just_the_name = just_the_name.replace("deepslate_", "")
+        just_the_name = just_the_name.replace("nether_", "")
+        just_the_name = just_the_name.replace("lit_", "")
+        just_the_name = just_the_name.replace("raw_", "")
+        just_the_name = just_the_name.replace("block", "ore")
 
         // Switch the ore back
         previous_ore = previous_ore.replace("_placeholder", "")
         previous_ore = previous_ore.replace("the_ore_finder_project:", "")
         arg.dimension.setBlockType(pos, previous_ore)
 
-        // we need to take the block name and rebuild it to the entity name
-        // EX: the_ore_finder_project:deepslate_diamond_drop becomes the_ore_finder_project:diamond_ore_entity
-        placeholder_ore = placeholder_ore.replace("placeholder", "entity")
-        placeholder_ore = placeholder_ore.replace("deepslate_", "")
-        placeholder_ore = placeholder_ore.replace("nether_", "")
-        placeholder_ore = placeholder_ore.replace("lit_", "")
-        placeholder_ore = placeholder_ore.replace("raw_", "")
-        placeholder_ore = placeholder_ore.replace("block", "ore")
         // I would love to find a way to summon an entity without using the runCommand, but this will work for now
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)
-        if (entlist.find((e) => e.typeId === placeholder_ore) == undefined) {
+        if (
+          entlist.find(
+            (e) =>
+              e.typeId === "the_ore_finder_project:vanilla_indicator_entity"
+          ) == undefined
+        ) {
           pos.x += 0.5
           //pos.y += 0.5 // only uncomment this to make the placholder poke out the top of the ore, used for testing material
           pos.z += 0.5
-          const ore = arg.dimension.spawnEntity(placeholder_ore, pos)
+          const ore = arg.dimension.spawnEntity(
+            "the_ore_finder_project:vanilla_indicator_entity",
+            pos
+          )
+          ore.triggerEvent("the_ore_finder_project:" + just_the_name)
           ore.addTag("torp_entity")
           ore.addTag("visible")
+          ore.addTag(just_the_name)
         }
       },
     }
