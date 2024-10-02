@@ -1,7 +1,7 @@
 {
   "materials": {
     "version": "1.0.0",
-    "entity_seethrough:entity_static": {
+    "entity_seethrough:entity_emissive_alpha": {
       "+states": [
         "DisableDepthTest"
       ]
