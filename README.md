@@ -18,45 +18,45 @@ The following examples were taken while "holding" the Universal Goggles...
 ***
 Recipes
 ---
-Not only do these googles highlight ores, but they also light up your surroundings when you wear them. The Overworld and Universal Goggles even give you night vision while you're wearing them. Remember, you have to wear the goggles to get the light and night vision effects – just holding them will only highlight ores.
+Not only do these goggles highlight ores, but they also light up your surroundings when you wear them. The Overworld and Universal Goggles even give you night vision while you're wearing them. Remember, you have to wear the goggles to get the light and night vision effects – just holding them will only highlight ores.
 
-##### Coal Ore Googles
+##### Coal Ore Goggles
 <img src="/screenshots/coal_ore_goggles_recipe.png" />
 
-##### Copper Ore Googles
+##### Copper Ore Goggles
 <img src="/screenshots/copper_ore_goggles_recipe.png" />
 
-##### Gold Ore Googles
+##### Gold Ore Goggles
 <img src="/screenshots/gold_ore_goggles_recipe.png" />
 
-##### Iron Ore Googles
+##### Iron Ore Goggles
 <img src="/screenshots/iron_ore_goggles_recipe.png" />
 
-##### Diamond Ore Googles
+##### Diamond Ore Goggles
 <img src="/screenshots/diamond_ore_goggles_recipe.png" />
 
-##### Emerald Ore Googles
+##### Emerald Ore Goggles
 <img src="/screenshots/emerald_ore_goggles_recipe.png" />
 
-##### Lapis Ore Googles
+##### Lapis Ore Goggles
 <img src="/screenshots/lapis_ore_goggles_recipe.png" />
 
-##### Redstone Ore Googles
+##### Redstone Ore Goggles
 <img src="/screenshots/redstone_ore_goggles_recipe.png" />
 
-##### Budding Amethyst Googles
+##### Budding Amethyst Goggles
 <img src="/screenshots/budding_amethyst_goggles_recipe.png" />
 
-##### Quartz Ore Googles
+##### Quartz Ore Goggles
 <img src="/screenshots/quartz_ore_goggles_recipe.png" />
 
-##### Ancient Debris Googles
+##### Ancient Debris Goggles
 <img src="/screenshots/ancient_debris_goggles_recipe.png" />
 
-##### Overworld Googles - Highlights all overworld ores
+##### Overworld Goggles - Highlights all overworld ores
 <img src="/screenshots/overworld_goggles_recipe.png" />
 
-##### Universal Googles - Highlights all ores
+##### Universal Goggles - Highlights all ores
 <img src="/screenshots/universal_goggles_recipe.png" />
 
 
