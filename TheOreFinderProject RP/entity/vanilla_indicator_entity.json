@@ -23,10 +23,10 @@
         "default": "geometry.box"
       },
       "animations": {
-        "spin": "animation.box.spin"
+        "box_spin": "animation.box.spin"
       },
       "scripts": {
-        "animate": ["spin"]
+        "animate": ["box_spin"]
       },
       "render_controllers": ["controller.render.vanilla_indicator"]
     }
