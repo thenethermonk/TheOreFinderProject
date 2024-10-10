@@ -24,17 +24,14 @@ world.beforeEvents.itemUse.subscribe((e) => {
     ) {
       e.cancel = true
 
-      let name = String(item.typeId)
-      name = name.replace("the_ore_finder_project:", "")
-      name = name.replace("_goggles", "")
       system.run(() => {
-        showGoggleOptions(source, item, name + " Goggles - Options")
+        showGoggleOptions(source, item)
       })
     }
   }
 })
 
-function showGoggleOptions(player: Player, item: ContainerSlot, title: string) {
+function showGoggleOptions(player: Player, item: ContainerSlot) {
   // pull the options of the item
   let options = { dd: false }
   if (item.getDynamicProperty("options") != undefined) {
@@ -42,7 +39,9 @@ function showGoggleOptions(player: Player, item: ContainerSlot, title: string) {
   }
 
   // build the modal
-  const modalForm = new ModalFormData().title(title)
+  const modalForm = new ModalFormData().title({
+    translate: item.typeId + "_options",
+  })
   modalForm.toggle("Double Distance", options.dd)
   modalForm
     .show(player)
@@ -124,23 +123,6 @@ function getEquipmentOptions(p: Player) {
   return ops
 }
 
-/*function getOptions(item: ContainerSlot, ops: Object) {
-  if (
-    item.getItem() != undefined &&
-    item.typeId.startsWith("the_ore_finder_project:") &&
-    item.typeId.endsWith("_goggles")
-  ) {
-    //Object.assign(ops, { show: true })
-    if (item.getDynamicProperty("options") != undefined) {
-      let name = item.typeId
-      name = name.replace("the_ore_finder_project:", "")
-      name = name.replace("_goggles", "")
-      Object.assign(ops, { [name]: item.getDynamicProperty("options") })
-    }
-  }
-  return ops
-}*/
-
 world.beforeEvents.worldInitialize.subscribe((initEvent) => {
   initEvent.blockComponentRegistry.registerCustomComponent(
     "the_ore_finder_project:ore_finder_component",
@@ -162,11 +144,6 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         the_name = the_name.replace("lit_", "")
         the_name = the_name.replace("raw_", "")
         the_name = the_name.replace("block", "ore")
-
-        // Switch the ore back
-        //previous_ore = previous_ore.replace("_placeholder", "")
-        //previous_ore = previous_ore.replace("the_ore_finder_project:", "")
-        //arg.dimension.setBlockType(pos, previous_ore)
 
         // Summon the indicator entity
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)

@@ -9,21 +9,20 @@ world.beforeEvents.itemUse.subscribe((e) => {
             item.typeId.startsWith("the_ore_finder_project:") &&
             item.typeId.endsWith("_goggles")) {
             e.cancel = true;
-            let name = String(item.typeId);
-            name = name.replace("the_ore_finder_project:", "");
-            name = name.replace("_goggles", "");
             system.run(() => {
-                showGoggleOptions(source, item, name + " Goggles - Options");
+                showGoggleOptions(source, item);
             });
         }
     }
 });
-function showGoggleOptions(player, item, title) {
+function showGoggleOptions(player, item) {
     let options = { dd: false };
     if (item.getDynamicProperty("options") != undefined) {
         options = JSON.parse(item.getDynamicProperty("options"));
     }
-    const modalForm = new ModalFormData().title(title);
+    const modalForm = new ModalFormData().title({
+        translate: item.typeId + "_options",
+    });
     modalForm.toggle("Double Distance", options.dd);
     modalForm
         .show(player)
