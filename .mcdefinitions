@@ -12,3 +12,6 @@ tag=iron_ore
 tag=lapis_ore
 tag=quartz_ore
 tag=redstone_ore
+
+tag=night_vision
+tag=had_night_vision
