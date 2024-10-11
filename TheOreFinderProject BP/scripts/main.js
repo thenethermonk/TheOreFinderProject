@@ -16,28 +16,50 @@ world.beforeEvents.itemUse.subscribe((e) => {
     }
 });
 function showGoggleOptions(player, item) {
-    let options = { dd: false };
+    let options = { dd: false, effect: 1 };
+    let effects = ["None", "Dynamic Torch"];
+    if (item.typeId == "the_ore_finder_project:overworld_goggles" ||
+        item.typeId == "the_ore_finder_project:universal_goggles") {
+        options.effect = 2;
+        effects.push("Night Vision");
+    }
     if (item.getDynamicProperty("options") != undefined) {
-        options = JSON.parse(item.getDynamicProperty("options"));
+        options = {
+            ...options,
+            ...JSON.parse(item.getDynamicProperty("options")),
+        };
     }
     const modalForm = new ModalFormData().title({
         translate: item.typeId + "_options",
     });
     modalForm.toggle("Double Distance", options.dd);
+    modalForm.dropdown("Effect", effects, options.effect);
     modalForm
         .show(player)
         .then((formData) => {
         if (formData.formValues) {
             let saveOptions = {
                 dd: formData.formValues[0],
+                effect: formData.formValues[1],
             };
             item.setDynamicProperty("options", JSON.stringify(saveOptions));
+            let lore = [];
             if (saveOptions.dd == true) {
-                item.setLore(["§gDouble Distance: §aEnabled"]);
+                lore.push("§gDouble Distance: §aEnabled");
             }
             else {
-                item.setLore(["§gDouble Distance: §8Disabled"]);
+                lore.push("§gDouble Distance: §8Disabled");
             }
+            if (saveOptions.effect == 1) {
+                lore.push("§gEffect: §aTorch");
+            }
+            else if (saveOptions.effect == 2) {
+                lore.push("§gEffect: §aNight Vision");
+            }
+            else {
+                lore.push("§gEffect: §8Disabled");
+            }
+            item.setLore(lore);
         }
     })
         .catch((error) => {
@@ -47,6 +69,8 @@ function showGoggleOptions(player, item) {
 }
 system.runInterval(() => {
     for (let player of world.getPlayers()) {
+        player.runCommand('execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]');
+        player.runCommand("execute as @e[tag=night_vision] at @s run tag @s remove night_vision");
         let ops = getEquipmentOptions(player);
         if (JSON.stringify(ops) !== "{}") {
             Object.entries(ops).forEach(([name, options]) => {
@@ -55,6 +79,16 @@ system.runInterval(() => {
                 }
                 else {
                     player.runCommand("function blocks/find_" + name);
+                }
+                if (options.slot == EquipmentSlot.Head &&
+                    (options.effect == undefined || options.effect != 0)) {
+                    if (options.effect == 1) {
+                        player.runCommand('execute as @a at @s run fill ~ ~ ~ ~ ~1 ~ light_block ["block_light_level"=9] keep');
+                    }
+                    if (options.effect == 2) {
+                        player.addTag("night_vision");
+                        player.runCommand("execute as @a[tag=night_vision] run effect @s night_vision 30 0 true");
+                    }
                 }
             });
         }
@@ -66,11 +100,12 @@ function getEquipmentOptions(p) {
     let ops = {};
     let equippable = p.getComponent("equippable");
     let slots = [
-        equippable?.getEquipmentSlot(EquipmentSlot.Mainhand),
-        equippable?.getEquipmentSlot(EquipmentSlot.Head),
-        equippable?.getEquipmentSlot(EquipmentSlot.Offhand),
+        EquipmentSlot.Mainhand,
+        EquipmentSlot.Head,
+        EquipmentSlot.Offhand,
     ];
-    slots.forEach((item) => {
+    slots.forEach((slot) => {
+        let item = equippable?.getEquipmentSlot(slot);
         if (item.getItem() != undefined &&
             item.typeId.startsWith("the_ore_finder_project:") &&
             item.typeId.endsWith("_goggles")) {
@@ -79,7 +114,11 @@ function getEquipmentOptions(p) {
             name = name.replace("_goggles", "");
             if (item.getDynamicProperty("options") != undefined) {
                 Object.assign(ops, {
-                    [name]: Object(JSON.parse(item.getDynamicProperty("options"))),
+                    [name]: {
+                        ...{ slot: slot },
+                        ...{ item: item },
+                        ...Object(JSON.parse(item.getDynamicProperty("options"))),
+                    },
                 });
             }
             else {
