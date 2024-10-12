@@ -8,6 +8,16 @@ import {
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
+/**
+ * watch player spawn to parse inventory and update lore based on options
+ *
+ */
+/*world.afterEvents.playerSpawn.subscribe((e) => {
+  const p = e.player
+
+  let i = p.getComponent("inventory")
+})*/
+
 world.beforeEvents.itemUse.subscribe((e) => {
   const { source, itemStack } = e
   if (source.isSneaking) {
@@ -53,15 +63,15 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   const modalForm = new ModalFormData().title({
     translate: item.typeId + "_options",
   })
-  modalForm.toggle("Double Distance", options.dd)
-  modalForm.dropdown("Effect", effects, options.effect)
+  modalForm.dropdown("\nEffect", effects, options.effect)
+  modalForm.toggle("Double Distance\n\n", options.dd)
   modalForm
     .show(player)
     .then((formData) => {
       if (formData.formValues) {
         let saveOptions = {
-          dd: formData.formValues[0],
-          effect: formData.formValues[1],
+          dd: formData.formValues[1],
+          effect: formData.formValues[0],
         }
         item.setDynamicProperty("options", JSON.stringify(saveOptions))
         let lore = []
