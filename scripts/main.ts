@@ -29,8 +29,7 @@ world.beforeEvents.itemUse.subscribe((e) => {
     const item = equippable?.getEquipmentSlot(EquipmentSlot.Mainhand)
     if (
       item.getItem() != undefined &&
-      item.typeId.startsWith("the_ore_finder_project:") &&
-      item.typeId.endsWith("_goggles")
+      item.getTags().includes("blockfinder_goggles")
     ) {
       e.cancel = true
 
@@ -104,15 +103,12 @@ system.runInterval(() => {
     player.runCommand(
       "execute as @e[tag=night_vision] at @s run tag @s remove night_vision"
     )
+
     let ops = getEquipmentOptions(player)
     // pull the options of the item
     if (JSON.stringify(ops) !== "{}") {
       Object.entries(ops).forEach(([name, options]: [string, any]) => {
-        if (options.dd != undefined && options.dd == true) {
-          player.runCommand("function blocks/find_" + name + "_double_distance")
-        } else {
-          player.runCommand("function blocks/find_" + name)
-        }
+        find_blocks(player, options.findblocks, options.dd)
 
         if (
           options.slot == EquipmentSlot.Head &&
@@ -142,6 +138,73 @@ system.runInterval(() => {
   }
 }, 5)
 
+function find_blocks(
+  player: Player,
+  block_names: [string],
+  double_distance = false
+) {
+  player.sendMessage(JSON.stringify(block_names))
+
+  // cycle through the block names that need to be replaced
+  block_names.forEach((full_name) => {
+    // we need to pull out the prefix, name and suffix
+    let n = full_name.split("_")
+    let suffix = ""
+    if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
+      suffix = String(n.pop())
+    }
+    let prefix = ""
+    if (n.length > 1) {
+      prefix = String(n.shift())
+    }
+    let name = n.join("_")
+
+    // if we have a : left and prefix is not set, split it again
+    if (prefix == "" && name.includes(":")) {
+      ;[prefix, name] = name.split(":")
+      prefix += ":"
+    }
+
+    // use an odd number, or 0 0 won't be counted!
+    let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"]
+
+    if (double_distance) {
+      fill_array = [
+        "~ ~ ~ ~30 ~30 ~30",
+        "~ ~ ~ ~30 ~30 ~-30",
+        "~ ~ ~ ~30 ~-30 ~30",
+        "~ ~ ~ ~30 ~-30 ~-30",
+        "~ ~ ~ ~-30 ~30 ~30",
+        "~ ~ ~ ~-30 ~30 ~-30",
+        "~ ~ ~ ~-30 ~-30 ~30",
+        "~ ~ ~ ~-30 ~-30 ~-30",
+      ]
+    }
+
+    fill_array.forEach((locs) => {
+      // replace the ore
+      player.runCommand(
+        `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
+      )
+      // put it back
+      player.runCommand(
+        `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
+      )
+    })
+
+    if (double_distance) {
+      // tag the entities so they don't get rebuilt
+      player.runCommand(
+        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, x=~-30.5, dx=60, y=~-30, dy=60, z=~-30.5, dz=60] add visible`
+      )
+    } else {
+      player.runCommand(
+        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, x=~-15.5, dx=30, y=~-15, dy=30, z=~-15.5, dz=30] add visible`
+      )
+    }
+  })
+}
+
 function getEquipmentOptions(p: Player) {
   let ops = {}
   let equippable = p.getComponent("equippable") as EntityEquippableComponent
@@ -156,26 +219,32 @@ function getEquipmentOptions(p: Player) {
 
     if (
       item.getItem() != undefined &&
-      item.typeId.startsWith("the_ore_finder_project:") &&
-      item.typeId.endsWith("_goggles")
+      item.getTags().includes("blockfinder_goggles")
     ) {
       //Object.assign(ops, { show: true })
       let name = String(item.typeId)
-      name = name.replace("the_ore_finder_project:", "")
-      name = name.replace("_goggles", "")
 
-      // WE NEED TO ADD TESTING FOR OVERWORLD AND UNIVERSAL GOGGLES,
+      let find_blocks: string[] = []
+      // parse through the goggle tags looking for findblock: tags
+      item.getTags().forEach((tag: string) => {
+        if (tag.startsWith("findblock:")) {
+          find_blocks.push(tag.replace("findblock:", ""))
+        }
+      })
+
+      let options = ""
       if (item.getDynamicProperty("options") != undefined) {
-        Object.assign(ops, {
-          [name]: {
-            ...{ slot: slot },
-            ...{ item: item },
-            ...Object(JSON.parse(item.getDynamicProperty("options") as string)),
-          },
-        })
-      } else {
-        Object.assign(ops, { [name]: {} })
+        options = item.getDynamicProperty("options") as string
       }
+
+      Object.assign(ops, {
+        [name]: {
+          ...{ slot: slot },
+          ...{ item: item },
+          ...{ findblocks: find_blocks },
+          ...Object(JSON.parse(options)),
+        },
+      })
     }
   })
 
@@ -191,7 +260,6 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         let pos = arg.block.location
 
         // prepare to pull name from the placeholder block name
-        let previous_ore = arg.block.type.id
         let the_name = arg.block.type.id
 
         // pull out the ore name, just the ore name
@@ -222,7 +290,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
           ore.triggerEvent("the_ore_finder_project:" + the_name)
           ore.addTag("torp_entity")
           ore.addTag("visible")
-          ore.addTag(the_name)
+          ore.addTag(arg.block.type.id)
         }
       },
     }

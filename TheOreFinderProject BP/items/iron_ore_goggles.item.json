@@ -15,6 +15,14 @@
       "minecraft:wearable": {
         "slot": "slot.armor.head",
         "protection": 0
+      },
+      "minecraft:tags": {
+        "tags": [
+          "blockfinder_goggles",
+          "findblock:minecraft:iron_ore",
+          "findblock:minecraft:deepslate_iron_ore",
+          "findblock:minecraft:raw_iron_block"
+        ]
       }
     }
   }

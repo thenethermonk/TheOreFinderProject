@@ -1,0 +1,40 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:block": {
+    "description": {
+      "identifier": "the_ore_finder_project:placeholder",
+      "states": {
+        "the_ore_finder_project:prefix": [
+          "minecraft:",
+          "minecraft:deepslate",
+          "minecraft:raw",
+          "minecraft:lit",
+          "minecraft:nether",
+          "minecraft:ancient",
+          "minecraft:budding"
+        ],
+        "the_ore_finder_project:name": [
+          "debris",
+          "amethyst",
+          "coal",
+          "copper",
+          "diamond",
+          "emerald",
+          "gold",
+          "iron",
+          "lapis",
+          "quartz",
+          "redstone",
+          "deepslate_redstone"
+        ],
+        "the_ore_finder_project:suffix": ["", "ore", "block"]
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": false,
+      "minecraft:custom_components": [
+        "the_ore_finder_project:ore_finder_component"
+      ]
+    }
+  }
+}

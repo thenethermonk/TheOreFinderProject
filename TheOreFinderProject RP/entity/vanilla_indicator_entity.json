@@ -7,6 +7,7 @@
         "default": "entity_seethrough"
       },
       "textures": {
+        "default": "textures/entity/default_entity",
         "ancient_debris": "textures/entity/ancient_debris_entity",
         "budding_amethyst": "textures/entity/budding_amethyst_entity",
         "coal_ore": "textures/entity/coal_ore_entity",

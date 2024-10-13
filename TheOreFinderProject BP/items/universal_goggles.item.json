@@ -15,6 +15,36 @@
       "minecraft:wearable": {
         "slot": "slot.armor.head",
         "protection": 0
+      },
+      "minecraft:tags": {
+        "tags": [
+          "blockfinder_goggles",
+          "findblock:minecraft:budding_amethyst",
+          "findblock:minecraft:coal_ore",
+          "findblock:minecraft:deepslate_coal_ore",
+          "findblock:minecraft:copper_ore",
+          "findblock:minecraft:deepslate_copper_ore",
+          "findblock:minecraft:raw_copper_block",
+          "findblock:minecraft:diamond_ore",
+          "findblock:minecraft:deepslate_diamond_ore",
+          "findblock:minecraft:emerald_ore",
+          "findblock:minecraft:deepslate_emerald_ore",
+          "findblock:minecraft:gold_ore",
+          "findblock:minecraft:deepslate_gold_ore",
+          "findblock:minecraft:nether_gold_ore",
+          "findblock:minecraft:raw_gold_block",
+          "findblock:minecraft:iron_ore",
+          "findblock:minecraft:deepslate_iron_ore",
+          "findblock:minecraft:raw_iron_block",
+          "findblock:minecraft:lapis_ore",
+          "findblock:minecraft:deepslate_lapis_ore",
+          "findblock:minecraft:redstone_ore",
+          "findblock:minecraft:deepslate_redstone_ore",
+          "findblock:minecraft:lit_redstone_ore",
+          "findblock:minecraft:lit_deepslate_redstone_ore",
+          "findblock:minecraft:ancient_debris",
+          "findblock:minecraft:quartz_ore"
+        ]
       }
     }
   }

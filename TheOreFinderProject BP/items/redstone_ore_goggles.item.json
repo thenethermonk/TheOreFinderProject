@@ -15,6 +15,15 @@
       "minecraft:wearable": {
         "slot": "slot.armor.head",
         "protection": 0
+      },
+      "minecraft:tags": {
+        "tags": [
+          "blockfinder_goggles",
+          "findblock:minecraft:redstone_ore",
+          "findblock:minecraft:deepslate_redstone_ore",
+          "findblock:minecraft:lit_redstone_ore",
+          "findblock:minecraft:lit_deepslate_redstone_ore"
+        ]
       }
     }
   }
