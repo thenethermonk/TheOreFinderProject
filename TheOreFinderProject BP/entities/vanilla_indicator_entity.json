@@ -7,6 +7,7 @@
       "is_spawnable": false,
       "is_summonable": true
     },
+    "components": {},
     "component_groups": {
       "the_ore_finder_project:ancient_debris": {
         "minecraft:variant": { "value": 0 }
@@ -14,35 +15,34 @@
       "the_ore_finder_project:budding_amethyst": {
         "minecraft:variant": { "value": 1 }
       },
-      "the_ore_finder_project:coal_ore": {
+      "the_ore_finder_project:coal": {
         "minecraft:variant": { "value": 2 }
       },
-      "the_ore_finder_project:copper_ore": {
+      "the_ore_finder_project:copper": {
         "minecraft:variant": { "value": 3 }
       },
-      "the_ore_finder_project:diamond_ore": {
+      "the_ore_finder_project:diamond": {
         "minecraft:variant": { "value": 4 }
       },
-      "the_ore_finder_project:emerald_ore": {
+      "the_ore_finder_project:emerald": {
         "minecraft:variant": { "value": 5 }
       },
-      "the_ore_finder_project:gold_ore": {
+      "the_ore_finder_project:gold": {
         "minecraft:variant": { "value": 6 }
       },
-      "the_ore_finder_project:iron_ore": {
+      "the_ore_finder_project:iron": {
         "minecraft:variant": { "value": 7 }
       },
-      "the_ore_finder_project:lapis_ore": {
+      "the_ore_finder_project:lapis": {
         "minecraft:variant": { "value": 8 }
       },
-      "the_ore_finder_project:quartz_ore": {
+      "the_ore_finder_project:quartz": {
         "minecraft:variant": { "value": 9 }
       },
-      "the_ore_finder_project:redstone_ore": {
+      "the_ore_finder_project:redstone": {
         "minecraft:variant": { "value": 10 }
       }
     },
-    "components": {},
     "events": {
       "the_ore_finder_project:ancient_debris": {
         "add": {
@@ -54,49 +54,49 @@
           "component_groups": ["the_ore_finder_project:budding_amethyst"]
         }
       },
-      "the_ore_finder_project:coal_ore": {
+      "the_ore_finder_project:coal": {
         "add": {
-          "component_groups": ["the_ore_finder_project:coal_ore"]
+          "component_groups": ["the_ore_finder_project:coal"]
         }
       },
-      "the_ore_finder_project:copper_ore": {
+      "the_ore_finder_project:copper": {
         "add": {
-          "component_groups": ["the_ore_finder_project:copper_ore"]
+          "component_groups": ["the_ore_finder_project:copper"]
         }
       },
-      "the_ore_finder_project:diamond_ore": {
+      "the_ore_finder_project:diamond": {
         "add": {
-          "component_groups": ["the_ore_finder_project:diamond_ore"]
+          "component_groups": ["the_ore_finder_project:diamond"]
         }
       },
-      "the_ore_finder_project:emerald_ore": {
+      "the_ore_finder_project:emerald": {
         "add": {
-          "component_groups": ["the_ore_finder_project:emerald_ore"]
+          "component_groups": ["the_ore_finder_project:emerald"]
         }
       },
-      "the_ore_finder_project:gold_ore": {
+      "the_ore_finder_project:gold": {
         "add": {
-          "component_groups": ["the_ore_finder_project:gold_ore"]
+          "component_groups": ["the_ore_finder_project:gold"]
         }
       },
-      "the_ore_finder_project:iron_ore": {
+      "the_ore_finder_project:iron": {
         "add": {
-          "component_groups": ["the_ore_finder_project:iron_ore"]
+          "component_groups": ["the_ore_finder_project:iron"]
         }
       },
-      "the_ore_finder_project:lapis_ore": {
+      "the_ore_finder_project:lapis": {
         "add": {
-          "component_groups": ["the_ore_finder_project:lapis_ore"]
+          "component_groups": ["the_ore_finder_project:lapis"]
         }
       },
-      "the_ore_finder_project:quartz_ore": {
+      "the_ore_finder_project:quartz": {
         "add": {
-          "component_groups": ["the_ore_finder_project:quartz_ore"]
+          "component_groups": ["the_ore_finder_project:quartz"]
         }
       },
-      "the_ore_finder_project:redstone_ore": {
+      "the_ore_finder_project:redstone": {
         "add": {
-          "component_groups": ["the_ore_finder_project:redstone_ore"]
+          "component_groups": ["the_ore_finder_project:redstone"]
         }
       }
     }

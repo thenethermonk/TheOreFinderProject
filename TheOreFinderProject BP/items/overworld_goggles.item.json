@@ -19,6 +19,7 @@
       "minecraft:tags": {
         "tags": [
           "blockfinder_goggles",
+          "allow_nightvision",
           "findblock:minecraft:budding_amethyst",
           "findblock:minecraft:coal_ore",
           "findblock:minecraft:deepslate_coal_ore",

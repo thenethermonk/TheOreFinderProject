@@ -17,8 +17,7 @@ world.beforeEvents.itemUse.subscribe((e) => {
 function showGoggleOptions(player, item) {
     let options = { dd: false, effect: 1 };
     let effects = ["None", "Dynamic Torch"];
-    if (item.typeId == "the_ore_finder_project:overworld_goggles" ||
-        item.typeId == "the_ore_finder_project:universal_goggles") {
+    if (item.getTags().includes("allow_nightvision")) {
         options.effect = 2;
         effects.push("Night Vision");
     }
@@ -42,23 +41,7 @@ function showGoggleOptions(player, item) {
                 effect: formData.formValues[0],
             };
             item.setDynamicProperty("options", JSON.stringify(saveOptions));
-            let lore = [];
-            if (saveOptions.dd == true) {
-                lore.push("§gDouble Distance: §aEnabled");
-            }
-            else {
-                lore.push("§gDouble Distance: §8Disabled");
-            }
-            if (saveOptions.effect == 1) {
-                lore.push("§gEffect: §aTorch");
-            }
-            else if (saveOptions.effect == 2) {
-                lore.push("§gEffect: §aNight Vision");
-            }
-            else {
-                lore.push("§gEffect: §8Disabled");
-            }
-            item.setLore(lore);
+            build_lore(item);
         }
     })
         .catch((error) => {
@@ -66,13 +49,34 @@ function showGoggleOptions(player, item) {
         return -1;
     });
 }
+function build_lore(item) {
+    let options_string = item.getDynamicProperty("options");
+    let ops = JSON.parse(options_string);
+    let lore = [];
+    if (ops.dd == true) {
+        lore.push("§gDouble Distance: §aEnabled");
+    }
+    else {
+        lore.push("§gDouble Distance: §8Disabled");
+    }
+    if (ops.effect == 1) {
+        lore.push("§gEffect: §aTorch");
+    }
+    else if (ops.effect == 2) {
+        lore.push("§gEffect: §aNight Vision");
+    }
+    else {
+        lore.push("§gEffect: §8Disabled");
+    }
+    item.setLore(lore);
+}
 system.runInterval(() => {
-    for (let player of world.getPlayers()) {
+    world.getPlayers().forEach((player) => {
         player.runCommand('execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]');
         player.runCommand("execute as @e[tag=night_vision] at @s run tag @s remove night_vision");
         let ops = getEquipmentOptions(player);
         if (JSON.stringify(ops) !== "{}") {
-            Object.entries(ops).forEach(([name, options]) => {
+            Object.entries(ops).forEach((options) => {
                 find_blocks(player, options.findblocks, options.dd);
                 if (options.slot == EquipmentSlot.Head &&
                     (options.effect == undefined || options.effect != 0)) {
@@ -88,51 +92,8 @@ system.runInterval(() => {
         }
         player.runCommand("execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s");
         player.runCommand("execute as @e[tag=visible] at @s run tag @s remove visible");
-    }
-}, 5);
-function find_blocks(player, block_names, double_distance = false) {
-    player.sendMessage(JSON.stringify(block_names));
-    block_names.forEach((full_name) => {
-        let n = full_name.split("_");
-        let suffix = "";
-        if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-            suffix = String(n.pop());
-        }
-        let prefix = "";
-        if (n.length > 1) {
-            prefix = String(n.shift());
-        }
-        let name = n.join("_");
-        if (prefix == "" && name.includes(":")) {
-            ;
-            [prefix, name] = name.split(":");
-            prefix += ":";
-        }
-        let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"];
-        if (double_distance) {
-            fill_array = [
-                "~ ~ ~ ~30 ~30 ~30",
-                "~ ~ ~ ~30 ~30 ~-30",
-                "~ ~ ~ ~30 ~-30 ~30",
-                "~ ~ ~ ~30 ~-30 ~-30",
-                "~ ~ ~ ~-30 ~30 ~30",
-                "~ ~ ~ ~-30 ~30 ~-30",
-                "~ ~ ~ ~-30 ~-30 ~30",
-                "~ ~ ~ ~-30 ~-30 ~-30",
-            ];
-        }
-        fill_array.forEach((locs) => {
-            player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
-            player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
-        });
-        if (double_distance) {
-            player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, x=~-30.5, dx=60, y=~-30, dy=60, z=~-30.5, dz=60] add visible`);
-        }
-        else {
-            player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, x=~-15.5, dx=30, y=~-15, dy=30, z=~-15.5, dz=30] add visible`);
-        }
     });
-}
+}, 5);
 function getEquipmentOptions(p) {
     let ops = {};
     let equippable = p.getComponent("equippable");
@@ -168,22 +129,63 @@ function getEquipmentOptions(p) {
     });
     return ops;
 }
+function find_blocks(player, block_names, double_distance = false) {
+    block_names.forEach((full_name) => {
+        let n = full_name.split("_");
+        let suffix = "";
+        if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
+            suffix = String(n.pop());
+        }
+        let prefix = "";
+        if (n.length > 1) {
+            prefix = String(n.shift());
+        }
+        let name = n.join("_");
+        if (prefix == "" && name.includes(":")) {
+            ;
+            [prefix, name] = name.split(":");
+            prefix += ":";
+        }
+        let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"];
+        if (double_distance) {
+            fill_array = [
+                "~ ~ ~ ~30 ~30 ~30",
+                "~ ~ ~ ~30 ~30 ~-30",
+                "~ ~ ~ ~30 ~-30 ~30",
+                "~ ~ ~ ~30 ~-30 ~-30",
+                "~ ~ ~ ~-30 ~30 ~30",
+                "~ ~ ~ ~-30 ~30 ~-30",
+                "~ ~ ~ ~-30 ~-30 ~30",
+                "~ ~ ~ ~-30 ~-30 ~-30",
+            ];
+        }
+        fill_array.forEach((locs) => {
+            player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
+            player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
+        });
+        let tag_range = double_distance
+            ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
+            : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30";
+        player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`);
+    });
+}
 world.beforeEvents.worldInitialize.subscribe((initEvent) => {
     initEvent.blockComponentRegistry.registerCustomComponent("the_ore_finder_project:ore_finder_component", {
         onPlace(arg) {
             let pos = arg.block.location;
             let the_name = arg.block.type.id;
+            the_name = the_name.substring(the_name.indexOf(":") + 1);
             the_name = the_name.replace("minecraft:", "");
-            the_name = the_name.replace("the_ore_finder_project:", "");
-            the_name = the_name.replace("_placeholder", "");
             the_name = the_name.replace("deepslate_", "");
             the_name = the_name.replace("nether_", "");
             the_name = the_name.replace("lit_", "");
             the_name = the_name.replace("raw_", "");
-            the_name = the_name.replace("block", "ore");
+            the_name = the_name.replace("_block", "");
+            the_name = the_name.replace("_ore", "");
             let entlist = arg.dimension.getEntitiesAtBlockLocation(pos);
             if (entlist.find((e) => e.typeId === "the_ore_finder_project:vanilla_indicator_entity") == undefined) {
                 pos.x += 0.5;
+                pos.y += 0.5;
                 pos.z += 0.5;
                 const ore = arg.dimension.spawnEntity("the_ore_finder_project:vanilla_indicator_entity", pos);
                 ore.triggerEvent("the_ore_finder_project:" + the_name);
@@ -195,12 +197,9 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
     });
 });
 world.afterEvents.playerBreakBlock.subscribe((e) => {
-    for (let p of world.getPlayers()) {
-        let ents = p.dimension.getEntitiesAtBlockLocation(e.block);
-        for (let ent of ents) {
-            if (ent.typeId == "the_ore_finder_project:vanilla_indicator_entity") {
-                ent.remove();
-            }
+    e.player.dimension.getEntitiesAtBlockLocation(e.block).forEach((ent) => {
+        if (ent.typeId == "the_ore_finder_project:vanilla_indicator_entity") {
+            ent.remove();
         }
-    }
+    });
 });
