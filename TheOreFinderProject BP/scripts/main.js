@@ -76,7 +76,7 @@ system.runInterval(() => {
         player.runCommand("execute as @e[tag=night_vision] at @s run tag @s remove night_vision");
         let ops = getEquipmentOptions(player);
         if (JSON.stringify(ops) !== "{}") {
-            Object.entries(ops).forEach((options) => {
+            Object.entries(ops).forEach(([name, options]) => {
                 find_blocks(player, options.findblocks, options.dd);
                 if (options.slot == EquipmentSlot.Head &&
                     (options.effect == undefined || options.effect != 0)) {
@@ -130,44 +130,46 @@ function getEquipmentOptions(p) {
     return ops;
 }
 function find_blocks(player, block_names, double_distance = false) {
-    block_names.forEach((full_name) => {
-        let n = full_name.split("_");
-        let suffix = "";
-        if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-            suffix = String(n.pop());
-        }
-        let prefix = "";
-        if (n.length > 1) {
-            prefix = String(n.shift());
-        }
-        let name = n.join("_");
-        if (prefix == "" && name.includes(":")) {
-            ;
-            [prefix, name] = name.split(":");
-            prefix += ":";
-        }
-        let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"];
-        if (double_distance) {
-            fill_array = [
-                "~ ~ ~ ~30 ~30 ~30",
-                "~ ~ ~ ~30 ~30 ~-30",
-                "~ ~ ~ ~30 ~-30 ~30",
-                "~ ~ ~ ~30 ~-30 ~-30",
-                "~ ~ ~ ~-30 ~30 ~30",
-                "~ ~ ~ ~-30 ~30 ~-30",
-                "~ ~ ~ ~-30 ~-30 ~30",
-                "~ ~ ~ ~-30 ~-30 ~-30",
-            ];
-        }
-        fill_array.forEach((locs) => {
-            player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
-            player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
+    if (block_names !== undefined) {
+        block_names.forEach((full_name) => {
+            let n = full_name.split("_");
+            let suffix = "";
+            if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
+                suffix = String(n.pop());
+            }
+            let prefix = "";
+            if (n.length > 1) {
+                prefix = String(n.shift());
+            }
+            let name = n.join("_");
+            if (prefix == "" && name.includes(":")) {
+                ;
+                [prefix, name] = name.split(":");
+                prefix += ":";
+            }
+            let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"];
+            if (double_distance) {
+                fill_array = [
+                    "~ ~ ~ ~30 ~30 ~30",
+                    "~ ~ ~ ~30 ~30 ~-30",
+                    "~ ~ ~ ~30 ~-30 ~30",
+                    "~ ~ ~ ~30 ~-30 ~-30",
+                    "~ ~ ~ ~-30 ~30 ~30",
+                    "~ ~ ~ ~-30 ~30 ~-30",
+                    "~ ~ ~ ~-30 ~-30 ~30",
+                    "~ ~ ~ ~-30 ~-30 ~-30",
+                ];
+            }
+            fill_array.forEach((locs) => {
+                player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
+                player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
+            });
+            let tag_range = double_distance
+                ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
+                : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30";
+            player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`);
         });
-        let tag_range = double_distance
-            ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
-            : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30";
-        player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`);
-    });
+    }
 }
 world.beforeEvents.worldInitialize.subscribe((initEvent) => {
     initEvent.blockComponentRegistry.registerCustomComponent("the_ore_finder_project:ore_finder_component", {

@@ -5,7 +5,6 @@ import {
   EquipmentSlot,
   ContainerSlot,
   EntityEquippableComponent,
-  EntityInventoryComponent,
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
@@ -118,7 +117,7 @@ function build_lore(item: ContainerSlot) {
 /**
  * this runInterval is set to run 4 times a second
  */
-
+//
 system.runInterval(() => {
   world.getPlayers().forEach((player) => {
     player.runCommand(
@@ -131,7 +130,7 @@ system.runInterval(() => {
     let ops = getEquipmentOptions(player)
     // pull the options of the item
     if (JSON.stringify(ops) !== "{}") {
-      Object.entries(ops).forEach((options: any) => {
+      Object.entries(ops).forEach(([name, options]: [string, any]) => {
         find_blocks(player, options.findblocks, options.dd)
 
         if (
@@ -226,60 +225,62 @@ function find_blocks(
   block_names: [string],
   double_distance = false
 ) {
-  // cycle through the block names that need to be replaced
-  block_names.forEach((full_name) => {
-    // we need to pull out the prefix, name and suffix
-    let n = full_name.split("_")
-    let suffix = ""
-    if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-      suffix = String(n.pop())
-    }
-    let prefix = ""
-    if (n.length > 1) {
-      prefix = String(n.shift())
-    }
-    let name = n.join("_")
+  if (block_names !== undefined) {
+    // cycle through the block names that need to be replaced
+    block_names.forEach((full_name) => {
+      // we need to pull out the prefix, name and suffix
+      let n = full_name.split("_")
+      let suffix = ""
+      if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
+        suffix = String(n.pop())
+      }
+      let prefix = ""
+      if (n.length > 1) {
+        prefix = String(n.shift())
+      }
+      let name = n.join("_")
 
-    // if we have a : left and prefix is not set, split it again
-    if (prefix == "" && name.includes(":")) {
-      ;[prefix, name] = name.split(":")
-      prefix += ":"
-    }
+      // if we have a : left and prefix is not set, split it again
+      if (prefix == "" && name.includes(":")) {
+        ;[prefix, name] = name.split(":")
+        prefix += ":"
+      }
 
-    // use an odd number, or 0 0 won't be counted!
-    let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"]
+      // use an odd number, or 0 0 won't be counted!
+      let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"]
 
-    if (double_distance) {
-      fill_array = [
-        "~ ~ ~ ~30 ~30 ~30",
-        "~ ~ ~ ~30 ~30 ~-30",
-        "~ ~ ~ ~30 ~-30 ~30",
-        "~ ~ ~ ~30 ~-30 ~-30",
-        "~ ~ ~ ~-30 ~30 ~30",
-        "~ ~ ~ ~-30 ~30 ~-30",
-        "~ ~ ~ ~-30 ~-30 ~30",
-        "~ ~ ~ ~-30 ~-30 ~-30",
-      ]
-    }
-    fill_array.forEach((locs) => {
-      // replace the ore
+      if (double_distance) {
+        fill_array = [
+          "~ ~ ~ ~30 ~30 ~30",
+          "~ ~ ~ ~30 ~30 ~-30",
+          "~ ~ ~ ~30 ~-30 ~30",
+          "~ ~ ~ ~30 ~-30 ~-30",
+          "~ ~ ~ ~-30 ~30 ~30",
+          "~ ~ ~ ~-30 ~30 ~-30",
+          "~ ~ ~ ~-30 ~-30 ~30",
+          "~ ~ ~ ~-30 ~-30 ~-30",
+        ]
+      }
+      fill_array.forEach((locs) => {
+        // replace the ore
+        player.runCommand(
+          `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
+        )
+        // put it back
+        player.runCommand(
+          `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
+        )
+      })
+
+      let tag_range = double_distance
+        ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
+        : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
+      // tag the entities so they don't get rebuilt
       player.runCommand(
-        `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
-      )
-      // put it back
-      player.runCommand(
-        `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
+        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`
       )
     })
-
-    let tag_range = double_distance
-      ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
-      : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
-    // tag the entities so they don't get rebuilt
-    player.runCommand(
-      `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`
-    )
-  })
+  }
 }
 
 /**
