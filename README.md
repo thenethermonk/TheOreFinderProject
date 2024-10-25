@@ -5,16 +5,19 @@ Unleash your inner miner with The Ore Finder Project, a groundbreaking addon for
 
 These remarkable goggles not only unveil the treasures lurking nearby but also light up your path, ensuring you never overlook a precious find in the darkness. Combine them to create the Overworld and Universal Goggles, which grant you night vision for exploring those deep, shadowy caves. Embark on a thrilling journey of discovery and let the Ore Finder Project illuminate your way to untold wealth!
 
-1.0.4 Update
+Features
 ---
-- Added a new options window that you can access while holding a pair of goggles in your main hand and using the item while crouched or sneaking. (PC - Shift Right Click)
-  - New Option - Effect: This allows you to turn change the effect applied while wearing the goggles on your head. For all googles you can choose between None and Torch. Overworld and Universal can also choose Night Vision.
-  - New Option - Double Distance: Turning this on will allow you to see twice as far away. This can be very helpfull for rare blocks like Ancient Debris and Emerald Ore. (WARNING!!! Have double distance on with Overworld or Universal goggles can cause lag due to the number of entities it creates. Use with caution!!!)
-- Added the ability for the goggles to also be held in the off hand. This will allow you to technically look for 3 different blocks (head, off hand, & main hand) before you get your Overworld goggles. Oh, did I forget to mention these stack???
-- Added a bit of lore to the goggles when you hover over them in your inventory after changing the options. This way you don't have to open the options menu to see what you have set.
+- Each set of goggles can be held in the main hand, the off hand or used as a helmet. This allows you to stack 3 different goggles at one time!
+- When used as a helmet, the single block goggles act as a light source. While the Overworld and Universal goggles grant night vision.
+- If you USE a pair of goggles while sneaking/crouching you will open up an options menu for those googles. Options include...
+  - Changing the lighting effect granted by the googles: None, Torch, or Night Vision (Where allowed)
+  - Turn on/off Double Distance, which will allow you to see twice as far away. This can be very helpfull for rare blocks like Ancient Debris and Emerald Ore. (WARNING!!! Have double distance on with Overworld or Universal goggles can cause lag due to the number of entities it creates. Use with caution!!!)
 
-Future Update
-- The next update will be adding an options on overworld and universal goggles to turn on/off individual blocks. For example: Later in the game you probably won't care about looking for Iron or Copper, so you will be able to turn those off.
+Future (Possible) Updates
+---
+- Adding an option on overworld and universal goggles to turn on/off individual blocks. For example: Later in the game you probably won't care about looking for Iron or Copper, so you will be able to turn those off.
+- Collaborating with some of the ORE addons to make new goggles for their custom ores
+- Revamping the recepies making them a little cheaper to build
 
 Screenshots
 ---
