@@ -17,7 +17,7 @@ Future (Possible) Updates
 ---
 - Adding an option on overworld and universal goggles to turn on/off individual blocks. For example: Later in the game you probably won't care about looking for Iron or Copper, so you will be able to turn those off.
 - Collaborating with some of the ORE addons to make new goggles for their custom ores
-- Revamping the recepies making them a little cheaper to build
+- Revamping the recipes making them a little cheaper to build
 
 Screenshots
 ---
