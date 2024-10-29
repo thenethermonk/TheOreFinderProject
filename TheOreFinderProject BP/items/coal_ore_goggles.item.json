@@ -18,9 +18,9 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:coal_ore",
-          "findblock:minecraft:deepslate_coal_ore"
+          "the_ore_finder_project:goggles",
+          "findblock:grey_64:minecraft:coal_ore",
+          "findblock:grey_64:minecraft:deepslate_coal_ore"
         ]
       }
     }

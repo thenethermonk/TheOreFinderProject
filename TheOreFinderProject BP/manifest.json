@@ -35,5 +35,17 @@
       "uuid": "f7788c8b-de30-433b-9268-ee10e91e79d2",
       "version": [1, 0, 5]
     }
+  ],
+  "subpacks": [
+    {
+      "folder_name": "default_mode",
+      "name": "Default Mode",
+      "memory_tier": 0
+    },
+    {
+      "folder_name": "easy_mode",
+      "name": "Easy Mode",
+      "memory_tier": 0
+    }
   ]
 }

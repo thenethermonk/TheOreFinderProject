@@ -17,7 +17,10 @@
         "protection": 0
       },
       "minecraft:tags": {
-        "tags": ["blockfinder_goggles", "findblock:minecraft:quartz_ore"]
+        "tags": [
+          "the_ore_finder_project:goggles",
+          "findblock:grey_192:minecraft:quartz_ore"
+        ]
       }
     }
   }

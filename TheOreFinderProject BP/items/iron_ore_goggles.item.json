@@ -18,10 +18,10 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:iron_ore",
-          "findblock:minecraft:deepslate_iron_ore",
-          "findblock:minecraft:raw_iron_block"
+          "the_ore_finder_project:goggles",
+          "findblock:grey_192:minecraft:iron_ore",
+          "findblock:grey_192:minecraft:deepslate_iron_ore",
+          "findblock:grey_192:minecraft:raw_iron_block"
         ]
       }
     }

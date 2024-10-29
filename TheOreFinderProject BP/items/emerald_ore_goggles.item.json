@@ -18,9 +18,9 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:emerald_ore",
-          "findblock:minecraft:deepslate_emerald_ore"
+          "the_ore_finder_project:goggles",
+          "findblock:green:minecraft:emerald_ore",
+          "findblock:green:minecraft:deepslate_emerald_ore"
         ]
       }
     }

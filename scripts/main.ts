@@ -5,11 +5,297 @@ import {
   EquipmentSlot,
   ContainerSlot,
   EntityEquippableComponent,
+  Vector3,
+  Block,
 } from "@minecraft/server"
-import { ModalFormData } from "@minecraft/server-ui"
+import { ModalFormData, ActionFormData } from "@minecraft/server-ui"
 
 /**
- * watch beforeEvents.itemUse for usages of our goggles identified by the blockfinder_goggles tag while sneaking
+ * Experamint
+ *
+ *
+ */
+/*function* new_find_blocks(p: Player) {
+  let distance = 15
+  let rad = distance / 2
+
+  let loc = p.location
+  let dir = p.getViewDirection()
+
+  //  loc.x = loc.x + dir.x * rad
+  //  loc.y = loc.y + 1.6 + dir.y * rad
+  //  loc.z = loc.z + dir.z * rad
+
+  let count = 0
+  for (let x = rad * -1; x < rad; x++) {
+    for (let y = rad * -1; y < rad; y++) {
+      for (let z = rad * -1; z < rad; z++) {
+        let pos = {
+          x: x + loc.x,
+          y: y + loc.y,
+          z: z + loc.z,
+        }
+        pos.x = pos.x > 0 ? Math.floor(pos.x) : Math.ceil(pos.x)
+        pos.y = pos.y > 0 ? Math.floor(pos.y) : Math.ceil(pos.y)
+        pos.z = pos.z > 0 ? Math.floor(pos.z) : Math.ceil(pos.z)
+
+        //pos.x = Math.round(pos.x)
+        //pos.y = Math.round(pos.y)
+        //pos.z = Math.round(pos.z)
+
+        let b = p.dimension.getBlock(pos)
+
+        if (b?.isValid && !b?.isAir && !b?.isLiquid) {
+          if (b?.typeId == "minecraft:coal_ore") {
+            newMarkLocation(b, p, pos)
+
+            count++
+          }
+        }
+        yield
+      }
+    }
+  }
+  p.sendMessage("Found " + count + " coal_ore")
+  system.runJob(new_find_blocks(p))
+}
+
+world.getPlayers().forEach((p) => {
+  system.runJob(new_find_blocks(p))
+})
+
+function newMarkLocation(b: Block, p: Player, pos: Vector3) {
+  // pull out the ore name for triggering the entity event that switches it's texture
+  let the_name = b.type.id
+  // start with the namespace
+  the_name = the_name.substring(the_name.indexOf(":") + 1)
+  // now the possible prefixes
+  the_name = the_name.replace("minecraft:", "")
+  the_name = the_name.replace("deepslate_", "")
+  the_name = the_name.replace("nether_", "")
+  the_name = the_name.replace("lit_", "")
+  the_name = the_name.replace("raw_", "")
+  // now the possible suffixes
+  the_name = the_name.replace("_block", "")
+  the_name = the_name.replace("_ore", "")
+
+  // Make sure the indicator entity doesn't already exist at this location, and Summon the indicator entity
+  let entlist = p.dimension.getEntitiesAtBlockLocation(pos)
+  if (
+    entlist.find(
+      (e) => e.typeId === "the_ore_finder_project:vanilla_indicator_entity"
+    ) == undefined
+  ) {
+    pos.x += 0.5
+    pos.y += 0.5
+    pos.z += 0.5
+    const ore = p.dimension.spawnEntity(
+      "the_ore_finder_project:vanilla_indicator_entity",
+      pos
+    )
+    //ore.triggerEvent("the_ore_finder_project:" + the_name)
+    ore.addTag("torp_entity")
+    ore.addTag("visible")
+    ore.addTag(b.type.id)
+  }
+}
+*/
+
+/**
+ * this runInterval is set to run 4 times a second
+ *
+ *
+ */
+system.runInterval(() => {
+  world.getPlayers().forEach((player) => {
+    player.runCommand(
+      'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]'
+    )
+    player.runCommand(
+      "execute as @e[tag=night_vision] at @s run tag @s remove night_vision"
+    )
+
+    let ops = getEquipmentOptions(player)
+    // pull the options of the item
+    if (JSON.stringify(ops) !== "{}") {
+      Object.entries(ops).forEach(([name, options]: [string, any]) => {
+        find_blocks(player, options.findblocks, options.dd)
+
+        if (
+          options.slot == EquipmentSlot.Head &&
+          (options.effect == undefined || options.effect != 0)
+        ) {
+          if (options.effect == 1) {
+            player.runCommand(
+              'execute as @a at @s run fill ~ ~ ~ ~ ~1 ~ light_block ["block_light_level"=9] keep'
+            )
+          }
+          if (options.effect == 2) {
+            player.addTag("night_vision")
+            player.runCommand(
+              "execute as @a[tag=night_vision] run effect @s night_vision 30 0 true"
+            )
+          }
+        }
+      })
+    }
+
+    // if an entity doesn't have the visible tag, kill it
+    player.runCommand(
+      "execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s"
+    )
+    // remove the visible tag
+    player.runCommand(
+      "execute as @e[tag=visible] at @s run tag @s remove visible"
+    )
+  })
+}, 5)
+
+/**
+ * function getEquipmentOptions
+ *
+ * @param p
+ * @returns an object based on the name of the item from the Mainhand, Head, and Offhand slots
+ */
+function getEquipmentOptions(p: Player) {
+  world.clearDynamicProperties()
+
+  let ops = {}
+  let equippable = p.getComponent("equippable") as EntityEquippableComponent
+  let slots = [
+    EquipmentSlot.Mainhand,
+    EquipmentSlot.Head,
+    EquipmentSlot.Offhand,
+  ]
+
+  slots.forEach((slot) => {
+    let item = equippable?.getEquipmentSlot(slot)
+
+    if (
+      item.getItem() != undefined &&
+      item.getTags().includes("the_ore_finder_project:goggles")
+    ) {
+      //Object.assign(ops, { show: true })
+      let name = String(item.typeId)
+
+      let find_blocks: string[] = []
+      // parse through the goggle tags looking for findblock: tags
+      item.getTags().forEach((tag: string) => {
+        if (tag.startsWith("findblock:")) {
+          let na = tag.replace("findblock:", "").split(":")
+          // as we're parsing through, set world dynamic properties for the colors
+          let color = na.shift()
+          let block_name = tag
+            .replace("findblock:", "")
+            .replace(color + ":", "")
+          world.setDynamicProperty(block_name, color)
+
+          find_blocks.push(block_name)
+        }
+      })
+
+      let options = ""
+      if (item.getDynamicProperty("options") != undefined) {
+        options = item.getDynamicProperty("options") as string
+      }
+
+      Object.assign(ops, {
+        [name]: {
+          ...{ slot: slot },
+          ...{ item: item },
+          ...{ findblocks: find_blocks },
+          ...Object(JSON.parse(options)),
+        },
+      })
+    }
+  })
+
+  return ops
+}
+
+/**
+ * function find_blocks is the core of the addon, it does a fill replace around the player based on the options passed to it
+ *
+ * @param player
+ * @param block_names
+ * @param double_distance
+ */
+function find_blocks(
+  player: Player,
+  block_names: [string],
+  double_distance = false
+) {
+  if (block_names !== undefined) {
+    // cycle through the block names that need to be replaced
+    block_names.forEach((full_name: string) => {
+      // we need to pull out the prefix, name and suffix
+      let n = full_name.split("_")
+      let suffix = ""
+      if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
+        suffix = String(n.pop())
+      }
+      let prefix = ""
+      if (n.length > 1) {
+        prefix = String(n.shift())
+      }
+      let name = n.join("_")
+
+      // if we have a : left and prefix is not set, split it again
+      if (prefix == "" && name.includes(":")) {
+        ;[prefix, name] = name.split(":")
+        prefix += ":"
+      }
+
+      // we need to set a variable for the -y chord as anything below -64 will break the fill function
+      let negY = -15
+      if (player.location.y < -49) {
+        negY = -64 - player.location.y
+      }
+
+      // use an odd number, or 0 0 won't be counted!
+      let fill_array = ["~-15 ~" + negY + " ~-15 ~15 ~15 ~15"]
+
+      if (double_distance) {
+        let negY = -30
+        if (player.location.y < -34) {
+          negY = -64 - player.location.y
+        }
+
+        fill_array = [
+          "~ ~ ~ ~30 ~30 ~30",
+          "~ ~ ~ ~30 ~30 ~-30",
+          "~ ~ ~ ~30 ~" + negY + " ~30",
+          "~ ~ ~ ~30 ~" + negY + " ~-30",
+          "~ ~ ~ ~-30 ~30 ~30",
+          "~ ~ ~ ~-30 ~30 ~-30",
+          "~ ~ ~ ~-30 ~" + negY + " ~30",
+          "~ ~ ~ ~-30 ~" + negY + " ~-30",
+        ]
+      }
+      fill_array.forEach((locs) => {
+        // replace the ore
+        player.runCommand(
+          `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
+        )
+        // put it back and tag the color...
+        player.runCommand(
+          `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
+        )
+      })
+
+      // tag the entities so they don't get rebuilt
+      let tag_range = double_distance
+        ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
+        : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
+      player.runCommand(
+        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`
+      )
+    })
+  }
+}
+
+/**
+ * watch beforeEvents.itemUse for usages of our goggles identified by the the_ore_finder_project:goggles tag while sneaking
  *
  */
 world.beforeEvents.itemUse.subscribe((e) => {
@@ -24,7 +310,7 @@ world.beforeEvents.itemUse.subscribe((e) => {
 
     if (
       item.getItem() != undefined &&
-      item.getTags().includes("blockfinder_goggles")
+      item.getTags().includes("the_ore_finder_project:goggles")
     ) {
       // we need to cancel the equip action for goggles
       e.cancel = true
@@ -69,6 +355,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   const modalForm = new ModalFormData().title({
     translate: item.typeId + "_options",
   })
+
   modalForm.dropdown("\nEffect", effects, options.effect)
   modalForm.toggle("Double Distance\n\n", options.dd)
   modalForm
@@ -115,175 +402,6 @@ function build_lore(item: ContainerSlot) {
 }
 
 /**
- * this runInterval is set to run 4 times a second
- */
-//
-system.runInterval(() => {
-  world.getPlayers().forEach((player) => {
-    player.runCommand(
-      'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]'
-    )
-    player.runCommand(
-      "execute as @e[tag=night_vision] at @s run tag @s remove night_vision"
-    )
-
-    let ops = getEquipmentOptions(player)
-    // pull the options of the item
-    if (JSON.stringify(ops) !== "{}") {
-      Object.entries(ops).forEach(([name, options]: [string, any]) => {
-        find_blocks(player, options.findblocks, options.dd)
-
-        if (
-          options.slot == EquipmentSlot.Head &&
-          (options.effect == undefined || options.effect != 0)
-        ) {
-          if (options.effect == 1) {
-            player.runCommand(
-              'execute as @a at @s run fill ~ ~ ~ ~ ~1 ~ light_block ["block_light_level"=9] keep'
-            )
-          }
-          if (options.effect == 2) {
-            player.addTag("night_vision")
-            player.runCommand(
-              "execute as @a[tag=night_vision] run effect @s night_vision 30 0 true"
-            )
-          }
-        }
-      })
-    }
-
-    player.runCommand(
-      "execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s"
-    )
-    player.runCommand(
-      "execute as @e[tag=visible] at @s run tag @s remove visible"
-    )
-  })
-}, 5)
-
-/**
- * function getEquipmentOptions
- *
- * @param p
- * @returns an object based on the name of the item from the Mainhand, Head, and Offhand slots
- */
-function getEquipmentOptions(p: Player) {
-  let ops = {}
-  let equippable = p.getComponent("equippable") as EntityEquippableComponent
-  let slots = [
-    EquipmentSlot.Mainhand,
-    EquipmentSlot.Head,
-    EquipmentSlot.Offhand,
-  ]
-
-  slots.forEach((slot) => {
-    let item = equippable?.getEquipmentSlot(slot)
-
-    if (
-      item.getItem() != undefined &&
-      item.getTags().includes("blockfinder_goggles")
-    ) {
-      //Object.assign(ops, { show: true })
-      let name = String(item.typeId)
-
-      let find_blocks: string[] = []
-      // parse through the goggle tags looking for findblock: tags
-      item.getTags().forEach((tag: string) => {
-        if (tag.startsWith("findblock:")) {
-          find_blocks.push(tag.replace("findblock:", ""))
-        }
-      })
-
-      let options = ""
-      if (item.getDynamicProperty("options") != undefined) {
-        options = item.getDynamicProperty("options") as string
-      }
-
-      Object.assign(ops, {
-        [name]: {
-          ...{ slot: slot },
-          ...{ item: item },
-          ...{ findblocks: find_blocks },
-          ...Object(JSON.parse(options)),
-        },
-      })
-    }
-  })
-
-  return ops
-}
-
-/**
- * function find_blocks is the core of the addon, it does a fill replace around the player based on the options passed to it
- *
- * @param player
- * @param block_names
- * @param double_distance
- */
-function find_blocks(
-  player: Player,
-  block_names: [string],
-  double_distance = false
-) {
-  if (block_names !== undefined) {
-    // cycle through the block names that need to be replaced
-    block_names.forEach((full_name) => {
-      // we need to pull out the prefix, name and suffix
-      let n = full_name.split("_")
-      let suffix = ""
-      if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-        suffix = String(n.pop())
-      }
-      let prefix = ""
-      if (n.length > 1) {
-        prefix = String(n.shift())
-      }
-      let name = n.join("_")
-
-      // if we have a : left and prefix is not set, split it again
-      if (prefix == "" && name.includes(":")) {
-        ;[prefix, name] = name.split(":")
-        prefix += ":"
-      }
-
-      // use an odd number, or 0 0 won't be counted!
-      let fill_array = ["~-15 ~-15 ~-15 ~15 ~15 ~15"]
-
-      if (double_distance) {
-        fill_array = [
-          "~ ~ ~ ~30 ~30 ~30",
-          "~ ~ ~ ~30 ~30 ~-30",
-          "~ ~ ~ ~30 ~-30 ~30",
-          "~ ~ ~ ~30 ~-30 ~-30",
-          "~ ~ ~ ~-30 ~30 ~30",
-          "~ ~ ~ ~-30 ~30 ~-30",
-          "~ ~ ~ ~-30 ~-30 ~30",
-          "~ ~ ~ ~-30 ~-30 ~-30",
-        ]
-      }
-      fill_array.forEach((locs) => {
-        // replace the ore
-        player.runCommand(
-          `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
-        )
-        // put it back
-        player.runCommand(
-          `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
-        )
-      })
-
-      let tag_range = double_distance
-        ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
-        : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
-      // tag the entities so they don't get rebuilt
-      player.runCommand(
-        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`
-      )
-    })
-  }
-}
-
-/**
  * Watch for our placeholder block (onPlace) then spawn in the apropriate entity
  */
 world.beforeEvents.worldInitialize.subscribe((initEvent) => {
@@ -294,8 +412,14 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         // get the location of the current block
         let pos = arg.block.location
 
+        // grab the tags and look for the color tag EX: the_ore_finder_project:red
+        let tags = arg.block.getTags()
+
         // prepare to pull name from the placeholder block name
         let the_name = arg.block.type.id
+
+        // grab the color from the world's dynamic properties
+        let the_color = world.getDynamicProperty(the_name)
 
         // pull out the ore name for triggering the entity event that switches it's texture
         // start with the namespace
@@ -325,7 +449,8 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
             "the_ore_finder_project:vanilla_indicator_entity",
             pos
           )
-          ore.triggerEvent("the_ore_finder_project:" + the_name)
+          // trigger event to set the color/texture
+          ore.triggerEvent("the_ore_finder_project:" + the_color)
           ore.addTag("torp_entity")
           ore.addTag("visible")
           ore.addTag(arg.block.type.id)
@@ -343,3 +468,7 @@ world.afterEvents.playerBreakBlock.subscribe((e) => {
     }
   })
 })
+
+function get_color_from_name(name: string) {
+  getEquipmentOptions
+}

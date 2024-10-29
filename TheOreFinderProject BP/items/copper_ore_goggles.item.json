@@ -18,10 +18,10 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:copper_ore",
-          "findblock:minecraft:deepslate_copper_ore",
-          "findblock:minecraft:raw_copper_block"
+          "the_ore_finder_project:goggles",
+          "findblock:orange:minecraft:copper_ore",
+          "findblock:orange:minecraft:deepslate_copper_ore",
+          "findblock:orange:minecraft:raw_copper_block"
         ]
       }
     }

@@ -18,11 +18,11 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:gold_ore",
-          "findblock:minecraft:deepslate_gold_ore",
-          "findblock:minecraft:nether_gold_ore",
-          "findblock:minecraft:raw_gold_block"
+          "the_ore_finder_project:goggles",
+          "findblock:yellow:minecraft:gold_ore",
+          "findblock:yellow:minecraft:deepslate_gold_ore",
+          "findblock:yellow:minecraft:nether_gold_ore",
+          "findblock:yellow:minecraft:raw_gold_block"
         ]
       }
     }

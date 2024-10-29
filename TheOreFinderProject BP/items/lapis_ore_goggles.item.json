@@ -18,9 +18,9 @@
       },
       "minecraft:tags": {
         "tags": [
-          "blockfinder_goggles",
-          "findblock:minecraft:lapis_ore",
-          "findblock:minecraft:deepslate_lapis_ore"
+          "the_ore_finder_project:goggles",
+          "findblock:blue:minecraft:lapis_ore",
+          "findblock:blue:minecraft:deepslate_lapis_ore"
         ]
       }
     }
