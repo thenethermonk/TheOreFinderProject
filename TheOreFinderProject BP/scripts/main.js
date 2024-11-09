@@ -4,7 +4,7 @@ system.runInterval(() => {
     world.getPlayers().forEach((player) => {
         player.runCommand('execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]');
         player.runCommand("execute as @e[tag=night_vision] at @s run tag @s remove night_vision");
-        let ops = getEquipmentOptions(player);
+        let ops = getAllEquipmentOptions(player);
         if (JSON.stringify(ops) !== "{}") {
             Object.entries(ops).forEach(([name, options]) => {
                 find_blocks(player, options.findblocks, options.dd);
@@ -24,46 +24,49 @@ system.runInterval(() => {
         player.runCommand("execute as @e[tag=visible] at @s run tag @s remove visible");
     });
 }, 5);
-function getEquipmentOptions(p) {
-    world.clearDynamicProperties();
+function getAllEquipmentOptions(p) {
     let ops = {};
-    let equippable = p.getComponent("equippable");
     let slots = [
         EquipmentSlot.Mainhand,
         EquipmentSlot.Head,
         EquipmentSlot.Offhand,
     ];
     slots.forEach((slot) => {
-        let item = equippable?.getEquipmentSlot(slot);
-        if (item.getItem() != undefined &&
-            item.getTags().includes("the_ore_finder_project:goggles")) {
-            let name = String(item.typeId);
-            let find_blocks = [];
-            item.getTags().forEach((tag) => {
-                if (tag.startsWith("findblock:")) {
-                    let na = tag.replace("findblock:", "").split(":");
-                    let color = na.shift();
-                    let block_name = tag
-                        .replace("findblock:", "")
-                        .replace(color + ":", "");
-                    world.setDynamicProperty(block_name, color);
-                    find_blocks.push(block_name);
-                }
-            });
-            let options = "";
-            if (item.getDynamicProperty("options") != undefined) {
-                options = item.getDynamicProperty("options");
-            }
-            Object.assign(ops, {
-                [name]: {
-                    ...{ slot: slot },
-                    ...{ item: item },
-                    ...{ findblocks: find_blocks },
-                    ...Object(JSON.parse(options)),
-                },
-            });
-        }
+        let slot_ops = getEquipmentOptions(p, slot);
+        Object.assign(ops, slot_ops);
     });
+    return ops;
+}
+function getEquipmentOptions(p, slot) {
+    let ops = {};
+    let equippable = p.getComponent("equippable");
+    let item = equippable?.getEquipmentSlot(slot);
+    if (item.getItem() != undefined &&
+        item.getTags().includes("the_ore_finder_project:goggles")) {
+        let name = String(item.typeId);
+        let find_blocks = [];
+        item.getTags().forEach((tag) => {
+            if (tag.startsWith("findblock:")) {
+                let na = tag.replace("findblock:", "").split(":");
+                let color = na.shift();
+                let block_name = tag.replace("findblock:", "").replace(color + ":", "");
+                world.setDynamicProperty(block_name, color);
+                find_blocks.push(block_name);
+            }
+        });
+        let options = "";
+        if (item.getDynamicProperty("options") != undefined) {
+            options = item.getDynamicProperty("options");
+        }
+        ops = {
+            [name]: {
+                ...{ slot: slot },
+                ...{ item: item },
+                ...{ findblocks: find_blocks },
+                ...Object(JSON.parse(options)),
+            },
+        };
+    }
     return ops;
 }
 function find_blocks(player, block_names, double_distance = false) {
@@ -112,7 +115,7 @@ function find_blocks(player, block_names, double_distance = false) {
             let tag_range = double_distance
                 ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
                 : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30";
-            player.runCommand(`execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`);
+            player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
         });
     }
 }
@@ -202,7 +205,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
             the_name = the_name.replace("_block", "");
             the_name = the_name.replace("_ore", "");
             let entlist = arg.dimension.getEntitiesAtBlockLocation(pos);
-            if (entlist.find((e) => e.typeId === "the_ore_finder_project:vanilla_indicator_entity") == undefined) {
+            if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
                 pos.x += 0.5;
                 pos.y += 0.5;
                 pos.z += 0.5;
@@ -222,6 +225,3 @@ world.afterEvents.playerBreakBlock.subscribe((e) => {
         }
     });
 });
-function get_color_from_name(name) {
-    getEquipmentOptions;
-}

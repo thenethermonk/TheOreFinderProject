@@ -5,105 +5,11 @@ import {
   EquipmentSlot,
   ContainerSlot,
   EntityEquippableComponent,
-  Vector3,
-  Block,
 } from "@minecraft/server"
-import { ModalFormData, ActionFormData } from "@minecraft/server-ui"
-
-/**
- * Experamint
- *
- *
- */
-/*function* new_find_blocks(p: Player) {
-  let distance = 15
-  let rad = distance / 2
-
-  let loc = p.location
-  let dir = p.getViewDirection()
-
-  //  loc.x = loc.x + dir.x * rad
-  //  loc.y = loc.y + 1.6 + dir.y * rad
-  //  loc.z = loc.z + dir.z * rad
-
-  let count = 0
-  for (let x = rad * -1; x < rad; x++) {
-    for (let y = rad * -1; y < rad; y++) {
-      for (let z = rad * -1; z < rad; z++) {
-        let pos = {
-          x: x + loc.x,
-          y: y + loc.y,
-          z: z + loc.z,
-        }
-        pos.x = pos.x > 0 ? Math.floor(pos.x) : Math.ceil(pos.x)
-        pos.y = pos.y > 0 ? Math.floor(pos.y) : Math.ceil(pos.y)
-        pos.z = pos.z > 0 ? Math.floor(pos.z) : Math.ceil(pos.z)
-
-        //pos.x = Math.round(pos.x)
-        //pos.y = Math.round(pos.y)
-        //pos.z = Math.round(pos.z)
-
-        let b = p.dimension.getBlock(pos)
-
-        if (b?.isValid && !b?.isAir && !b?.isLiquid) {
-          if (b?.typeId == "minecraft:coal_ore") {
-            newMarkLocation(b, p, pos)
-
-            count++
-          }
-        }
-        yield
-      }
-    }
-  }
-  p.sendMessage("Found " + count + " coal_ore")
-  system.runJob(new_find_blocks(p))
-}
-
-world.getPlayers().forEach((p) => {
-  system.runJob(new_find_blocks(p))
-})
-
-function newMarkLocation(b: Block, p: Player, pos: Vector3) {
-  // pull out the ore name for triggering the entity event that switches it's texture
-  let the_name = b.type.id
-  // start with the namespace
-  the_name = the_name.substring(the_name.indexOf(":") + 1)
-  // now the possible prefixes
-  the_name = the_name.replace("minecraft:", "")
-  the_name = the_name.replace("deepslate_", "")
-  the_name = the_name.replace("nether_", "")
-  the_name = the_name.replace("lit_", "")
-  the_name = the_name.replace("raw_", "")
-  // now the possible suffixes
-  the_name = the_name.replace("_block", "")
-  the_name = the_name.replace("_ore", "")
-
-  // Make sure the indicator entity doesn't already exist at this location, and Summon the indicator entity
-  let entlist = p.dimension.getEntitiesAtBlockLocation(pos)
-  if (
-    entlist.find(
-      (e) => e.typeId === "the_ore_finder_project:vanilla_indicator_entity"
-    ) == undefined
-  ) {
-    pos.x += 0.5
-    pos.y += 0.5
-    pos.z += 0.5
-    const ore = p.dimension.spawnEntity(
-      "the_ore_finder_project:vanilla_indicator_entity",
-      pos
-    )
-    //ore.triggerEvent("the_ore_finder_project:" + the_name)
-    ore.addTag("torp_entity")
-    ore.addTag("visible")
-    ore.addTag(b.type.id)
-  }
-}
-*/
+import { ModalFormData } from "@minecraft/server-ui"
 
 /**
  * this runInterval is set to run 4 times a second
- *
  *
  */
 system.runInterval(() => {
@@ -115,7 +21,7 @@ system.runInterval(() => {
       "execute as @e[tag=night_vision] at @s run tag @s remove night_vision"
     )
 
-    let ops = getEquipmentOptions(player)
+    let ops = getAllEquipmentOptions(player)
     // pull the options of the item
     if (JSON.stringify(ops) !== "{}") {
       Object.entries(ops).forEach(([name, options]: [string, any]) => {
@@ -151,17 +57,8 @@ system.runInterval(() => {
   })
 }, 5)
 
-/**
- * function getEquipmentOptions
- *
- * @param p
- * @returns an object based on the name of the item from the Mainhand, Head, and Offhand slots
- */
-function getEquipmentOptions(p: Player) {
-  world.clearDynamicProperties()
-
+function getAllEquipmentOptions(p: Player) {
   let ops = {}
-  let equippable = p.getComponent("equippable") as EntityEquippableComponent
   let slots = [
     EquipmentSlot.Mainhand,
     EquipmentSlot.Head,
@@ -169,46 +66,61 @@ function getEquipmentOptions(p: Player) {
   ]
 
   slots.forEach((slot) => {
-    let item = equippable?.getEquipmentSlot(slot)
+    let slot_ops = getEquipmentOptions(p, slot)
 
-    if (
-      item.getItem() != undefined &&
-      item.getTags().includes("the_ore_finder_project:goggles")
-    ) {
-      //Object.assign(ops, { show: true })
-      let name = String(item.typeId)
-
-      let find_blocks: string[] = []
-      // parse through the goggle tags looking for findblock: tags
-      item.getTags().forEach((tag: string) => {
-        if (tag.startsWith("findblock:")) {
-          let na = tag.replace("findblock:", "").split(":")
-          // as we're parsing through, set world dynamic properties for the colors
-          let color = na.shift()
-          let block_name = tag
-            .replace("findblock:", "")
-            .replace(color + ":", "")
-          world.setDynamicProperty(block_name, color)
-
-          find_blocks.push(block_name)
-        }
-      })
-
-      let options = ""
-      if (item.getDynamicProperty("options") != undefined) {
-        options = item.getDynamicProperty("options") as string
-      }
-
-      Object.assign(ops, {
-        [name]: {
-          ...{ slot: slot },
-          ...{ item: item },
-          ...{ findblocks: find_blocks },
-          ...Object(JSON.parse(options)),
-        },
-      })
-    }
+    Object.assign(ops, slot_ops)
   })
+
+  return ops
+}
+
+/**
+ * function getEquipmentOptions
+ *
+ * @param p : Minecraft Player object
+ * @returns an object based on the name of the item from the Mainhand, Head, and Offhand slots
+ */
+function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
+  let ops = {}
+  let equippable = p.getComponent("equippable") as EntityEquippableComponent
+  let item = equippable?.getEquipmentSlot(slot)
+
+  if (
+    item.getItem() != undefined &&
+    item.getTags().includes("the_ore_finder_project:goggles")
+  ) {
+    let name = String(item.typeId)
+    let find_blocks: string[] = []
+
+    // parse through the goggle tags looking for findblock: tags
+    item.getTags().forEach((tag: string) => {
+      if (tag.startsWith("findblock:")) {
+        // as we're parsing through, set world dynamic properties for the colors
+        let na = tag.replace("findblock:", "").split(":")
+        let color = na.shift()
+        let block_name = tag.replace("findblock:", "").replace(color + ":", "")
+
+        // add entity switch to block_name world dynamic property
+
+        world.setDynamicProperty(block_name, color)
+        find_blocks.push(block_name)
+      }
+    })
+
+    let options = ""
+    if (item.getDynamicProperty("options") != undefined) {
+      options = item.getDynamicProperty("options") as string
+    }
+
+    ops = {
+      [name]: {
+        ...{ slot: slot },
+        ...{ item: item },
+        ...{ findblocks: find_blocks },
+        ...Object(JSON.parse(options)),
+      },
+    }
+  }
 
   return ops
 }
@@ -288,7 +200,7 @@ function find_blocks(
         ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
         : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
       player.runCommand(
-        `execute as @s run tag @e[type=the_ore_finder_project:vanilla_indicator_entity, tag=${full_name}, ${tag_range}] add visible`
+        `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`
       )
     })
   }
@@ -436,12 +348,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
 
         // Make sure the indicator entity doesn't already exist at this location, and Summon the indicator entity
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)
-        if (
-          entlist.find(
-            (e) =>
-              e.typeId === "the_ore_finder_project:vanilla_indicator_entity"
-          ) == undefined
-        ) {
+        if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
           pos.x += 0.5
           pos.y += 0.5
           pos.z += 0.5
@@ -468,7 +375,3 @@ world.afterEvents.playerBreakBlock.subscribe((e) => {
     }
   })
 })
-
-function get_color_from_name(name: string) {
-  getEquipmentOptions
-}

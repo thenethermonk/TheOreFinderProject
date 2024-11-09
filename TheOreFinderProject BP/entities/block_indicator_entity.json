@@ -1,0 +1,262 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "the_ore_finder_project:block_indicator_entity",
+      "runtime_identifier": "minecraft:snowball",
+      "is_spawnable": false,
+      "is_summonable": true
+    },
+    "components": {},
+    "component_groups": {
+      "the_ore_finder_project:default": {
+        "minecraft:variant": { "value": 0 }
+      },
+      "the_ore_finder_project:red": {
+        "minecraft:variant": { "value": 1 }
+      },
+      "the_ore_finder_project:orange": {
+        "minecraft:variant": { "value": 2 }
+      },
+      "the_ore_finder_project:yellow": {
+        "minecraft:variant": { "value": 3 }
+      },
+      "the_ore_finder_project:lime": {
+        "minecraft:variant": { "value": 4 }
+      },
+      "the_ore_finder_project:green": {
+        "minecraft:variant": { "value": 5 }
+      },
+      "the_ore_finder_project:aqua": {
+        "minecraft:variant": { "value": 6 }
+      },
+      "the_ore_finder_project:cyan": {
+        "minecraft:variant": { "value": 7 }
+      },
+      "the_ore_finder_project:azure": {
+        "minecraft:variant": { "value": 8 }
+      },
+      "the_ore_finder_project:blue": {
+        "minecraft:variant": { "value": 9 }
+      },
+      "the_ore_finder_project:violet": {
+        "minecraft:variant": { "value": 10 }
+      },
+      "the_ore_finder_project:magenta": {
+        "minecraft:variant": { "value": 11 }
+      },
+      "the_ore_finder_project:rose": {
+        "minecraft:variant": { "value": 12 }
+      },
+      "the_ore_finder_project:dark_red": {
+        "minecraft:variant": { "value": 13 }
+      },
+      "the_ore_finder_project:dark_orange": {
+        "minecraft:variant": { "value": 14 }
+      },
+      "the_ore_finder_project:dark_yellow": {
+        "minecraft:variant": { "value": 15 }
+      },
+      "the_ore_finder_project:dark_lime": {
+        "minecraft:variant": { "value": 16 }
+      },
+      "the_ore_finder_project:dark_green": {
+        "minecraft:variant": { "value": 17 }
+      },
+      "the_ore_finder_project:dark_aqua": {
+        "minecraft:variant": { "value": 18 }
+      },
+      "the_ore_finder_project:dark_cyan": {
+        "minecraft:variant": { "value": 19 }
+      },
+      "the_ore_finder_project:dark_azure": {
+        "minecraft:variant": { "value": 20 }
+      },
+      "the_ore_finder_project:dark_blue": {
+        "minecraft:variant": { "value": 21 }
+      },
+      "the_ore_finder_project:dark_violet": {
+        "minecraft:variant": { "value": 22 }
+      },
+      "the_ore_finder_project:dark_magenta": {
+        "minecraft:variant": { "value": 23 }
+      },
+      "the_ore_finder_project:dark_rose": {
+        "minecraft:variant": { "value": 24 }
+      },
+      "the_ore_finder_project:light_red": {
+        "minecraft:variant": { "value": 25 }
+      },
+      "the_ore_finder_project:light_orange": {
+        "minecraft:variant": { "value": 26 }
+      },
+      "the_ore_finder_project:light_yellow": {
+        "minecraft:variant": { "value": 27 }
+      },
+      "the_ore_finder_project:light_lime": {
+        "minecraft:variant": { "value": 28 }
+      },
+      "the_ore_finder_project:light_green": {
+        "minecraft:variant": { "value": 29 }
+      },
+      "the_ore_finder_project:light_aqua": {
+        "minecraft:variant": { "value": 30 }
+      },
+      "the_ore_finder_project:light_cyan": {
+        "minecraft:variant": { "value": 31 }
+      },
+      "the_ore_finder_project:light_azure": {
+        "minecraft:variant": { "value": 32 }
+      },
+      "the_ore_finder_project:light_blue": {
+        "minecraft:variant": { "value": 33 }
+      },
+      "the_ore_finder_project:light_violet": {
+        "minecraft:variant": { "value": 34 }
+      },
+      "the_ore_finder_project:light_magenta": {
+        "minecraft:variant": { "value": 35 }
+      },
+      "the_ore_finder_project:light_rose": {
+        "minecraft:variant": { "value": 36 }
+      },
+      "the_ore_finder_project:grey_64": {
+        "minecraft:variant": { "value": 37 }
+      },
+      "the_ore_finder_project:grey_128": {
+        "minecraft:variant": { "value": 38 }
+      },
+      "the_ore_finder_project:grey_192": {
+        "minecraft:variant": { "value": 39 }
+      },
+      "the_ore_finder_project:white": {
+        "minecraft:variant": { "value": 40 }
+      }
+    },
+    "events": {
+      "the_ore_finder_project:default": {
+        "add": { "component_groups": ["the_ore_finder_project:default"] }
+      },
+      "the_ore_finder_project:red": {
+        "add": { "component_groups": ["the_ore_finder_project:red"] }
+      },
+      "the_ore_finder_project:orange": {
+        "add": { "component_groups": ["the_ore_finder_project:orange"] }
+      },
+      "the_ore_finder_project:yellow": {
+        "add": { "component_groups": ["the_ore_finder_project:yellow"] }
+      },
+      "the_ore_finder_project:lime": {
+        "add": { "component_groups": ["the_ore_finder_project:lime"] }
+      },
+      "the_ore_finder_project:green": {
+        "add": { "component_groups": ["the_ore_finder_project:green"] }
+      },
+      "the_ore_finder_project:aqua": {
+        "add": { "component_groups": ["the_ore_finder_project:aqua"] }
+      },
+      "the_ore_finder_project:cyan": {
+        "add": { "component_groups": ["the_ore_finder_project:cyan"] }
+      },
+      "the_ore_finder_project:azure": {
+        "add": { "component_groups": ["the_ore_finder_project:azure"] }
+      },
+      "the_ore_finder_project:blue": {
+        "add": { "component_groups": ["the_ore_finder_project:blue"] }
+      },
+      "the_ore_finder_project:violet": {
+        "add": { "component_groups": ["the_ore_finder_project:violet"] }
+      },
+      "the_ore_finder_project:magenta": {
+        "add": { "component_groups": ["the_ore_finder_project:magenta"] }
+      },
+      "the_ore_finder_project:rose": {
+        "add": { "component_groups": ["the_ore_finder_project:rose"] }
+      },
+      "the_ore_finder_project:dark_red": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_red"] }
+      },
+      "the_ore_finder_project:dark_orange": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_orange"] }
+      },
+      "the_ore_finder_project:dark_yellow": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_yellow"] }
+      },
+      "the_ore_finder_project:dark_lime": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_lime"] }
+      },
+      "the_ore_finder_project:dark_green": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_green"] }
+      },
+      "the_ore_finder_project:dark_aqua": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_aqua"] }
+      },
+      "the_ore_finder_project:dark_cyan": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_cyan"] }
+      },
+      "the_ore_finder_project:dark_azure": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_azure"] }
+      },
+      "the_ore_finder_project:dark_blue": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_blue"] }
+      },
+      "the_ore_finder_project:dark_violet": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_violet"] }
+      },
+      "the_ore_finder_project:dark_magenta": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_magenta"] }
+      },
+      "the_ore_finder_project:dark_rose": {
+        "add": { "component_groups": ["the_ore_finder_project:dark_rose"] }
+      },
+      "the_ore_finder_project:light_red": {
+        "add": { "component_groups": ["the_ore_finder_project:light_red"] }
+      },
+      "the_ore_finder_project:light_orange": {
+        "add": { "component_groups": ["the_ore_finder_project:light_orange"] }
+      },
+      "the_ore_finder_project:light_yellow": {
+        "add": { "component_groups": ["the_ore_finder_project:light_yellow"] }
+      },
+      "the_ore_finder_project:light_lime": {
+        "add": { "component_groups": ["the_ore_finder_project:light_lime"] }
+      },
+      "the_ore_finder_project:light_green": {
+        "add": { "component_groups": ["the_ore_finder_project:light_green"] }
+      },
+      "the_ore_finder_project:light_aqua": {
+        "add": { "component_groups": ["the_ore_finder_project:light_aqua"] }
+      },
+      "the_ore_finder_project:light_cyan": {
+        "add": { "component_groups": ["the_ore_finder_project:light_cyan"] }
+      },
+      "the_ore_finder_project:light_azure": {
+        "add": { "component_groups": ["the_ore_finder_project:light_azure"] }
+      },
+      "the_ore_finder_project:light_blue": {
+        "add": { "component_groups": ["the_ore_finder_project:light_blue"] }
+      },
+      "the_ore_finder_project:light_violet": {
+        "add": { "component_groups": ["the_ore_finder_project:light_violet"] }
+      },
+      "the_ore_finder_project:light_magenta": {
+        "add": { "component_groups": ["the_ore_finder_project:light_magenta"] }
+      },
+      "the_ore_finder_project:light_rose": {
+        "add": { "component_groups": ["the_ore_finder_project:light_rose"] }
+      },
+      "the_ore_finder_project:grey_64": {
+        "add": { "component_groups": ["the_ore_finder_project:grey_64"] }
+      },
+      "the_ore_finder_project:grey_128": {
+        "add": { "component_groups": ["the_ore_finder_project:grey_128"] }
+      },
+      "the_ore_finder_project:grey_192": {
+        "add": { "component_groups": ["the_ore_finder_project:grey_192"] }
+      },
+      "the_ore_finder_project:white": {
+        "add": { "component_groups": ["the_ore_finder_project:white"] }
+      }
+    }
+  }
+}
