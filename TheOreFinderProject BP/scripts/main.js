@@ -54,7 +54,7 @@ function getEquipmentOptions(p, slot) {
                 find_blocks.push(block_name);
             }
         });
-        let options = "";
+        let options = "{}";
         if (item.getDynamicProperty("options") != undefined) {
             options = item.getDynamicProperty("options");
         }

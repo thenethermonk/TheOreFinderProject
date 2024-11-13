@@ -107,7 +107,7 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
       }
     })
 
-    let options = ""
+    let options = "{}"
     if (item.getDynamicProperty("options") != undefined) {
       options = item.getDynamicProperty("options") as string
     }
