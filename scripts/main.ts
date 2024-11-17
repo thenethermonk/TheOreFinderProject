@@ -5,6 +5,7 @@ import {
   EquipmentSlot,
   ContainerSlot,
   EntityEquippableComponent,
+  Vector3,
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
@@ -61,8 +62,8 @@ function getAllEquipmentOptions(p: Player) {
   let ops = {}
   let slots = [
     EquipmentSlot.Mainhand,
-    EquipmentSlot.Head,
     EquipmentSlot.Offhand,
+    EquipmentSlot.Head,
   ]
 
   slots.forEach((slot) => {
@@ -85,12 +86,22 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
   let equippable = p.getComponent("equippable") as EntityEquippableComponent
   let item = equippable?.getEquipmentSlot(slot)
 
+  if (detectItemChanged(p, slot)) {
+    kill_all_indicators(p)
+  }
+
   if (
     item.getItem() != undefined &&
     item.getTags().includes("the_ore_finder_project:goggles")
   ) {
     let name = String(item.typeId)
     let find_blocks: string[] = []
+    let indicator = "box"
+    let options = "{}"
+
+    if (item.getDynamicProperty("options") != undefined) {
+      options = item.getDynamicProperty("options") as string
+    }
 
     // parse through the goggle tags looking for findblock: tags
     item.getTags().forEach((tag: string) => {
@@ -100,17 +111,28 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         let color = na.shift()
         let block_name = tag.replace("findblock:", "").replace(color + ":", "")
 
-        // add entity switch to block_name world dynamic property
+        // add entity switch to block_name player dynamic property
+        p.setDynamicProperty(block_name + "_color", color)
 
-        world.setDynamicProperty(block_name, color)
+        // set the indicator type
+        switch (JSON.parse(options).indicator) {
+          case 1: {
+            p.setDynamicProperty(block_name + "_indicator", "orb")
+            break
+          }
+          case 2: {
+            p.setDynamicProperty(block_name + "_indicator", "block")
+            break
+          }
+          default: {
+            p.setDynamicProperty(block_name + "_indicator", "box")
+            break
+          }
+        }
+
         find_blocks.push(block_name)
       }
     })
-
-    let options = "{}"
-    if (item.getDynamicProperty("options") != undefined) {
-      options = item.getDynamicProperty("options") as string
-    }
 
     ops = {
       [name]: {
@@ -246,8 +268,9 @@ world.beforeEvents.itemUse.subscribe((e) => {
  */
 function showGoggleOptions(player: Player, item: ContainerSlot) {
   // prepare the defaults
-  let options = { dd: false, effect: 1 }
+  let options = { dd: false, effect: 1, indicator: 0 }
   let effects = ["None", "Dynamic Torch"]
+  let indicators = ["Box", "Orb", "Block"]
 
   // if the item has the allow_nightvision tag, add it to available effects and set it as the default
   if (item.getTags().includes("allow_nightvision")) {
@@ -269,18 +292,22 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   })
 
   modalForm.dropdown("\nEffect", effects, options.effect)
+  modalForm.dropdown("Indicator Type", indicators, options.indicator)
   modalForm.toggle("Double Distance\n\n", options.dd)
   modalForm
     .show(player)
     .then((formData) => {
       if (formData.formValues) {
         let saveOptions = {
-          dd: formData.formValues[1],
+          dd: formData.formValues[2],
           effect: formData.formValues[0],
+          indicator: formData.formValues[1],
         }
         item.setDynamicProperty("options", JSON.stringify(saveOptions))
         build_lore(item)
       }
+      // kill all torp_entities forcing them to reload
+      kill_all_indicators(player)
     })
     .catch((error: Error) => {
       player.sendMessage("Failed to show form: " + error)
@@ -310,6 +337,13 @@ function build_lore(item: ContainerSlot) {
   } else {
     lore.push("§gEffect: §8Disabled")
   }
+  if (ops.indicator == 1) {
+    lore.push("§gIndicator: §aOrb")
+  } else if (ops.effect == 2) {
+    lore.push("§gIndicator: §aBlock")
+  } else {
+    lore.push("§gIndicator: §aBox")
+  }
   item.setLore(lore)
 }
 
@@ -330,8 +364,12 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         // prepare to pull name from the placeholder block name
         let the_name = arg.block.type.id
 
-        // grab the color from the world's dynamic properties
-        let the_color = world.getDynamicProperty(the_name)
+        // grab the color from the closest player's dynamic properties
+        let p = getClosestPlayer(pos)
+        let the_color = p.getDynamicProperty(the_name + "_color")
+
+        // grab the indicator entity type
+        let the_indicator = p.getDynamicProperty(the_name + "_indicator")
 
         // pull out the ore name for triggering the entity event that switches it's texture
         // start with the namespace
@@ -352,8 +390,9 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
           pos.x += 0.5
           pos.y += 0.5
           pos.z += 0.5
+
           const ore = arg.dimension.spawnEntity(
-            "the_ore_finder_project:vanilla_indicator_entity",
+            "the_ore_finder_project:" + the_indicator + "_indicator_entity",
             pos
           )
           // trigger event to set the color/texture
@@ -367,11 +406,49 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
   )
 })
 
+function getClosestPlayer(loc: Vector3) {
+  let dis = 0
+  let player = undefined
+  world.getPlayers().forEach((p) => {
+    // get the player's distance
+    const dx = p.location.x - loc.x
+    const dy = p.location.y - loc.y
+    const dz = p.location.z - loc.z
+    let d = Math.sqrt(dx * dx + dy * dy + dz * dz)
+    if (d > dis) {
+      dis = d
+      player = p
+    }
+  })
+
+  if (player == undefined) {
+    return world.getPlayers()[0]
+  } else {
+    return player
+  }
+}
+
 // watch for blocks to break, then remove the indicator entity if it exists
 world.afterEvents.playerBreakBlock.subscribe((e) => {
   e.player.dimension.getEntitiesAtBlockLocation(e.block).forEach((ent) => {
-    if (ent.typeId == "the_ore_finder_project:vanilla_indicator_entity") {
+    if (ent.getTags().includes("torp_entity")) {
       ent.remove()
     }
   })
 })
+
+function detectItemChanged(p: Player, slot: EquipmentSlot) {
+  let equippable = p.getComponent("equippable") as EntityEquippableComponent
+  let item = equippable?.getEquipmentSlot(slot)
+  if (item.getItem() == undefined) {
+    p.setDynamicProperty(slot, undefined)
+  } else if (p.getDynamicProperty(slot) != item.typeId) {
+    p.setDynamicProperty(slot, item.typeId)
+    return true
+  }
+  return false
+}
+
+function kill_all_indicators(p: Player) {
+  p.runCommand("execute as @e[tag=torp_entity] at @s run kill @s")
+}

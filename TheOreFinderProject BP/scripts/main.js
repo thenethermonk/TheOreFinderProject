@@ -28,8 +28,8 @@ function getAllEquipmentOptions(p) {
     let ops = {};
     let slots = [
         EquipmentSlot.Mainhand,
-        EquipmentSlot.Head,
         EquipmentSlot.Offhand,
+        EquipmentSlot.Head,
     ];
     slots.forEach((slot) => {
         let slot_ops = getEquipmentOptions(p, slot);
@@ -41,23 +41,41 @@ function getEquipmentOptions(p, slot) {
     let ops = {};
     let equippable = p.getComponent("equippable");
     let item = equippable?.getEquipmentSlot(slot);
+    if (detectItemChanged(p, slot)) {
+        kill_all_indicators(p);
+    }
     if (item.getItem() != undefined &&
         item.getTags().includes("the_ore_finder_project:goggles")) {
         let name = String(item.typeId);
         let find_blocks = [];
+        let indicator = "box";
+        let options = "{}";
+        if (item.getDynamicProperty("options") != undefined) {
+            options = item.getDynamicProperty("options");
+        }
         item.getTags().forEach((tag) => {
             if (tag.startsWith("findblock:")) {
                 let na = tag.replace("findblock:", "").split(":");
                 let color = na.shift();
                 let block_name = tag.replace("findblock:", "").replace(color + ":", "");
-                world.setDynamicProperty(block_name, color);
+                p.setDynamicProperty(block_name + "_color", color);
+                switch (JSON.parse(options).indicator) {
+                    case 1: {
+                        p.setDynamicProperty(block_name + "_indicator", "orb");
+                        break;
+                    }
+                    case 2: {
+                        p.setDynamicProperty(block_name + "_indicator", "block");
+                        break;
+                    }
+                    default: {
+                        p.setDynamicProperty(block_name + "_indicator", "box");
+                        break;
+                    }
+                }
                 find_blocks.push(block_name);
             }
         });
-        let options = "{}";
-        if (item.getDynamicProperty("options") != undefined) {
-            options = item.getDynamicProperty("options");
-        }
         ops = {
             [name]: {
                 ...{ slot: slot },
@@ -134,8 +152,9 @@ world.beforeEvents.itemUse.subscribe((e) => {
     }
 });
 function showGoggleOptions(player, item) {
-    let options = { dd: false, effect: 1 };
+    let options = { dd: false, effect: 1, indicator: 0 };
     let effects = ["None", "Dynamic Torch"];
+    let indicators = ["Box", "Orb", "Block"];
     if (item.getTags().includes("allow_nightvision")) {
         options.effect = 2;
         effects.push("Night Vision");
@@ -150,18 +169,21 @@ function showGoggleOptions(player, item) {
         translate: item.typeId + "_options",
     });
     modalForm.dropdown("\nEffect", effects, options.effect);
+    modalForm.dropdown("Indicator Type", indicators, options.indicator);
     modalForm.toggle("Double Distance\n\n", options.dd);
     modalForm
         .show(player)
         .then((formData) => {
         if (formData.formValues) {
             let saveOptions = {
-                dd: formData.formValues[1],
+                dd: formData.formValues[2],
                 effect: formData.formValues[0],
+                indicator: formData.formValues[1],
             };
             item.setDynamicProperty("options", JSON.stringify(saveOptions));
             build_lore(item);
         }
+        kill_all_indicators(player);
     })
         .catch((error) => {
         player.sendMessage("Failed to show form: " + error);
@@ -187,6 +209,15 @@ function build_lore(item) {
     else {
         lore.push("§gEffect: §8Disabled");
     }
+    if (ops.indicator == 1) {
+        lore.push("§gIndicator: §aOrb");
+    }
+    else if (ops.effect == 2) {
+        lore.push("§gIndicator: §aBlock");
+    }
+    else {
+        lore.push("§gIndicator: §aBox");
+    }
     item.setLore(lore);
 }
 world.beforeEvents.worldInitialize.subscribe((initEvent) => {
@@ -195,7 +226,9 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
             let pos = arg.block.location;
             let tags = arg.block.getTags();
             let the_name = arg.block.type.id;
-            let the_color = world.getDynamicProperty(the_name);
+            let p = getClosestPlayer(pos);
+            let the_color = p.getDynamicProperty(the_name + "_color");
+            let the_indicator = p.getDynamicProperty(the_name + "_indicator");
             the_name = the_name.substring(the_name.indexOf(":") + 1);
             the_name = the_name.replace("minecraft:", "");
             the_name = the_name.replace("deepslate_", "");
@@ -209,7 +242,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
                 pos.x += 0.5;
                 pos.y += 0.5;
                 pos.z += 0.5;
-                const ore = arg.dimension.spawnEntity("the_ore_finder_project:vanilla_indicator_entity", pos);
+                const ore = arg.dimension.spawnEntity("the_ore_finder_project:" + the_indicator + "_indicator_entity", pos);
                 ore.triggerEvent("the_ore_finder_project:" + the_color);
                 ore.addTag("torp_entity");
                 ore.addTag("visible");
@@ -218,10 +251,45 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         },
     });
 });
+function getClosestPlayer(loc) {
+    let dis = 0;
+    let player = undefined;
+    world.getPlayers().forEach((p) => {
+        const dx = p.location.x - loc.x;
+        const dy = p.location.y - loc.y;
+        const dz = p.location.z - loc.z;
+        let d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (d > dis) {
+            dis = d;
+            player = p;
+        }
+    });
+    if (player == undefined) {
+        return world.getPlayers()[0];
+    }
+    else {
+        return player;
+    }
+}
 world.afterEvents.playerBreakBlock.subscribe((e) => {
     e.player.dimension.getEntitiesAtBlockLocation(e.block).forEach((ent) => {
-        if (ent.typeId == "the_ore_finder_project:vanilla_indicator_entity") {
+        if (ent.getTags().includes("torp_entity")) {
             ent.remove();
         }
     });
 });
+function detectItemChanged(p, slot) {
+    let equippable = p.getComponent("equippable");
+    let item = equippable?.getEquipmentSlot(slot);
+    if (item.getItem() == undefined) {
+        p.setDynamicProperty(slot, undefined);
+    }
+    else if (p.getDynamicProperty(slot) != item.typeId) {
+        p.setDynamicProperty(slot, item.typeId);
+        return true;
+    }
+    return false;
+}
+function kill_all_indicators(p) {
+    p.runCommand("execute as @e[tag=torp_entity] at @s run kill @s");
+}
