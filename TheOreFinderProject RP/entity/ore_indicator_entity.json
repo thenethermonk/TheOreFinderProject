@@ -1,0 +1,41 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "the_ore_finder_project:ore_indicator_entity",
+      "materials": {
+        "default": "entity_seethrough"
+      },
+      "textures": {
+        "default": "textures/glow/blank",
+        "coal_ore": "textures/glow/blocks/coal_ore",
+        "deepslate_coal_ore": "textures/glow/blocks/deepslate_coal_ore",
+        "copper_ore":"textures/glow/blocks/copper_ore",
+        "deepslate_copper_ore":"textures/glow/blocks/deepslate_copper_ore",
+        "raw_copper_block":"textures/glow/blocks/raw_copper_block",
+        "iron_ore":"textures/glow/blocks/iron_ore",
+        "deepslate_iron_ore":"textures/glow/blocks/deepslate_iron_ore",
+        "raw_iron_block":"textures/glow/blocks/raw_iron_block",
+        "gold_ore":"textures/glow/blocks/gold_ore",
+        "deepslate_gold_ore":"textures/glow/blocks/deepslate_gold_ore",
+        "raw_gold_block":"textures/glow/blocks/raw_gold_block",
+        "nether_gold_ore":"textures/glow/blocks/nether_gold_ore",
+        "diamond_ore":"textures/glow/blocks/diamond_ore",
+        "deepslate_diamond_ore":"textures/glow/blocks/deepslate_diamond_ore",
+        "emerald_ore":"textures/glow/blocks/emerald_ore",
+        "deepslate_emerald_ore":"textures/glow/blocks/deepslate_emerald_ore",
+        "redstone_ore":"textures/glow/blocks/redstone_ore",
+        "deepslate_redstone_ore":"textures/glow/blocks/deepslate_redstone_ore",
+        "lapis_ore":"textures/glow/blocks/lapis_ore",
+        "deepslate_lapis_ore":"textures/glow/blocks/deepslate_lapis_ore",
+        "budding_amethyst":"textures/glow/blocks/budding_amethyst",
+        "quartz_ore":"textures/glow/blocks/quartz_ore",
+        "ancient_debris":"textures/glow/blocks/ancient_debris"
+      },
+      "geometry": {
+        "default": "geometry.oreblock"
+      },
+      "render_controllers": ["controller.render.ore_indicator"]
+    }
+  }
+}

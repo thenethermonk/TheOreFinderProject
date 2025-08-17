@@ -48,7 +48,6 @@ function getEquipmentOptions(p, slot) {
         item.getTags().includes("the_ore_finder_project:goggles")) {
         let name = String(item.typeId);
         let find_blocks = [];
-        let indicator = "box";
         let options = "{}";
         if (item.getDynamicProperty("options") != undefined) {
             options = item.getDynamicProperty("options");
@@ -65,7 +64,11 @@ function getEquipmentOptions(p, slot) {
                         break;
                     }
                     case 2: {
-                        p.setDynamicProperty(block_name + "_indicator", "block");
+                        p.setDynamicProperty(block_name + "_indicator", "outline");
+                        break;
+                    }
+                    case 3: {
+                        p.setDynamicProperty(block_name + "_indicator", "ore");
                         break;
                     }
                     default: {
@@ -154,7 +157,7 @@ world.beforeEvents.itemUse.subscribe((e) => {
 function showGoggleOptions(player, item) {
     let options = { dd: false, effect: 1, indicator: 0 };
     let effects = ["None", "Dynamic Torch"];
-    let indicators = ["Box", "Orb", "Block"];
+    let indicators = ["Box", "Orb", "Outline", "Ore"];
     if (item.getTags().includes("allow_nightvision")) {
         options.effect = 2;
         effects.push("Night Vision");
@@ -171,6 +174,7 @@ function showGoggleOptions(player, item) {
     modalForm.dropdown("\nEffect", effects, options.effect);
     modalForm.dropdown("Indicator Type", indicators, options.indicator);
     modalForm.toggle("Double Distance\n\n", options.dd);
+    modalForm.submitButton("Save Options");
     modalForm
         .show(player)
         .then((formData) => {
@@ -213,7 +217,10 @@ function build_lore(item) {
         lore.push("§gIndicator: §aOrb");
     }
     else if (ops.effect == 2) {
-        lore.push("§gIndicator: §aBlock");
+        lore.push("§gIndicator: §aOutline");
+    }
+    else if (ops.effect == 3) {
+        lore.push("§gIndicator: §aOre");
     }
     else {
         lore.push("§gIndicator: §aBox");
@@ -231,9 +238,10 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
             let the_indicator = p.getDynamicProperty(the_name + "_indicator");
             the_name = the_name.substring(the_name.indexOf(":") + 1);
             the_name = the_name.replace("minecraft:", "");
+            the_name = the_name.replace("lit_", "");
+            let block_name = the_name;
             the_name = the_name.replace("deepslate_", "");
             the_name = the_name.replace("nether_", "");
-            the_name = the_name.replace("lit_", "");
             the_name = the_name.replace("raw_", "");
             the_name = the_name.replace("_block", "");
             the_name = the_name.replace("_ore", "");
@@ -243,7 +251,12 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
                 pos.y += 0.5;
                 pos.z += 0.5;
                 const ore = arg.dimension.spawnEntity("the_ore_finder_project:" + the_indicator + "_indicator_entity", pos);
-                ore.triggerEvent("the_ore_finder_project:" + the_color);
+                if (the_indicator == 'ore') {
+                    ore.triggerEvent("the_ore_finder_project:" + block_name);
+                }
+                else {
+                    ore.triggerEvent("the_ore_finder_project:" + the_color);
+                }
                 ore.addTag("torp_entity");
                 ore.addTag("visible");
                 ore.addTag(arg.block.type.id);

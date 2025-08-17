@@ -12,6 +12,7 @@ Features
 - If you USE a pair of goggles while sneaking/crouching you will open up an options menu for those googles. Options include...
   - Changing the lighting effect granted by the googles: None, Torch, or Night Vision (Where allowed)
   - Turn on/off Double Distance, which will allow you to see twice as far away. This can be very helpfull for rare blocks like Ancient Debris and Emerald Ore. (WARNING!!! Have double distance on with Overworld or Universal goggles can cause lag due to the number of entities it creates. Use with caution!!!)
+  - Changing the type of entity that marks the location of the ores (Box, Orb, Outline, Ore)
 
 Future (Possible) Updates
 ---
@@ -31,8 +32,11 @@ The following examples were taken while "holding" the Universal Goggles...
 ##### Options Menu
 <img src="/screenshots/universal_google_options.png" alt="Universal Goggles Options" width="50%" />
 
+##### See it in action!
+<img src="/screenshots/ultimate_goggles_in_use.gif" alt="Universal Goggles in use" width="50%" />
+
 ***
 Recipes
 ---
 
-Recipes have been simplified. You only need 1 leather, 1 piece of the ore type (gold ingot, diamond, etc...), and 1 spider eye. These can be in any configuration. This change makes the goggles less of an endgame item and more useful for progression where they are needed.
+Recipes are very simple. You only need 1 leather, 1 piece of the ore type (gold ingot, diamond, etc...), and 1 spider eye. These can be in any configuration. Crafting table is not required!

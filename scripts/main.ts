@@ -96,7 +96,7 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
   ) {
     let name = String(item.typeId)
     let find_blocks: string[] = []
-    let indicator = "box"
+    //let indicator = "box"
     let options = "{}"
 
     if (item.getDynamicProperty("options") != undefined) {
@@ -118,10 +118,14 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         switch (JSON.parse(options).indicator) {
           case 1: {
             p.setDynamicProperty(block_name + "_indicator", "orb")
-            break
+            break            
           }
           case 2: {
-            p.setDynamicProperty(block_name + "_indicator", "block")
+            p.setDynamicProperty(block_name + "_indicator", "outline")
+            break
+          }
+          case 3: {
+            p.setDynamicProperty(block_name + "_indicator", "ore")
             break
           }
           default: {
@@ -206,6 +210,7 @@ function find_blocks(
           "~ ~ ~ ~-30 ~" + negY + " ~-30",
         ]
       }
+
       fill_array.forEach((locs) => {
         // replace the ore
         player.runCommand(
@@ -270,7 +275,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   // prepare the defaults
   let options = { dd: false, effect: 1, indicator: 0 }
   let effects = ["None", "Dynamic Torch"]
-  let indicators = ["Box", "Orb", "Block"]
+  let indicators = ["Box", "Orb", "Outline", "Ore"]
 
   // if the item has the allow_nightvision tag, add it to available effects and set it as the default
   if (item.getTags().includes("allow_nightvision")) {
@@ -294,6 +299,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   modalForm.dropdown("\nEffect", effects, options.effect)
   modalForm.dropdown("Indicator Type", indicators, options.indicator)
   modalForm.toggle("Double Distance\n\n", options.dd)
+  modalForm.submitButton("Save Options")
   modalForm
     .show(player)
     .then((formData) => {
@@ -340,7 +346,9 @@ function build_lore(item: ContainerSlot) {
   if (ops.indicator == 1) {
     lore.push("§gIndicator: §aOrb")
   } else if (ops.effect == 2) {
-    lore.push("§gIndicator: §aBlock")
+    lore.push("§gIndicator: §aOutline")
+  } else if (ops.effect == 3) {
+    lore.push("§gIndicator: §aOre")
   } else {
     lore.push("§gIndicator: §aBox")
   }
@@ -367,7 +375,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         // grab the color from the closest player's dynamic properties
         let p = getClosestPlayer(pos)
         let the_color = p.getDynamicProperty(the_name + "_color")
-
+      
         // grab the indicator entity type
         let the_indicator = p.getDynamicProperty(the_name + "_indicator")
 
@@ -376,9 +384,10 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         the_name = the_name.substring(the_name.indexOf(":") + 1)
         // now the possible prefixes
         the_name = the_name.replace("minecraft:", "")
+        the_name = the_name.replace("lit_", "")
+        let block_name = the_name
         the_name = the_name.replace("deepslate_", "")
         the_name = the_name.replace("nether_", "")
-        the_name = the_name.replace("lit_", "")
         the_name = the_name.replace("raw_", "")
         // now the possible suffixes
         the_name = the_name.replace("_block", "")
@@ -396,7 +405,12 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
             pos
           )
           // trigger event to set the color/texture
-          ore.triggerEvent("the_ore_finder_project:" + the_color)
+          if (the_indicator == 'ore') {
+            ore.triggerEvent("the_ore_finder_project:" + block_name)
+          }else {
+            ore.triggerEvent("the_ore_finder_project:" + the_color)
+          }
+          
           ore.addTag("torp_entity")
           ore.addTag("visible")
           ore.addTag(arg.block.type.id)

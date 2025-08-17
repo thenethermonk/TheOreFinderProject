@@ -57,6 +57,6 @@
         "default": "geometry.orb"
       },
       "render_controllers": ["controller.render.vanilla_indicator"]
-    }
+      }
   }
 }

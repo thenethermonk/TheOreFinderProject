@@ -1,24 +1,27 @@
 {
   "format_version": 2,
   "header": {
-    "description": "An addon that adds an ore finder item that highlights nearby ores - by The Nether Monk",
-    "name": "The Ore Finder Project - RP",
-    "uuid": "f7788c8b-de30-433b-9268-ee10e91e79d2",
-    "version": [1, 0, 6],
+    "description": "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv1.1.0",
+    "name": "§2The Ore Finder Project - RP",
+    "dev-uuid": "75b067b9-59db-4a36-99b6-98bd58556af7",
+    "live-uuid": "abbd0d2c-9ae4-4368-a714-60d988b9dcc9",
+    "uuid": "75b067b9-59db-4a36-99b6-98bd58556af7",
+    "version": [1, 1, 0],
     "min_engine_version": [1, 21, 20]
   },
+  "dependencies": [
+    {
+      "dev_uuid": "84eb68c8-1ff7-42ba-b591-e7b856b7eb4f",
+      "live_uuid": "744d717c-e229-40e7-9ead-b693faa9cc0c",
+      "uuid": "84eb68c8-1ff7-42ba-b591-e7b856b7eb4f",
+      "version": [1, 1, 0]
+    }
+  ],
   "modules": [
     {
-      "description": "An addon that adds an ore finder item that highlights nearby ores - by The Nether Monk",
       "type": "resources",
       "uuid": "0ffec8e6-af74-4e40-9f23-5d6282c20d0a",
       "version": [1, 0, 0]
-    }
-  ],
-  "dependencies": [
-    {
-      "uuid": "18cac9cd-f79c-40f4-a82a-1abac0da1d81",
-      "version": [1, 0, 6]
     }
   ]
 }

@@ -1,9 +1,16 @@
 {
   "materials": {
     "version": "1.0.0",
-    "entity_seethrough:entity_emissive_alpha": {
+    "entity_seethrough:entity_emissive_alpha_one_sided": {
       "+states": [
-        "DisableDepthTest"
+        "DisableDepthTest",
+        "Blending",
+        "DisableDepthWrite",
+        "DisableAlphaWrite"
+      ],
+      "defines": [
+        "ENABLE_FOG",
+        "ENABLE_LIGHT"
       ]
     }
   }

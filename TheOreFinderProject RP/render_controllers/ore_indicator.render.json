@@ -1,0 +1,55 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.ore_indicator": {
+      "arrays": {
+        "textures": {
+          "Array.skins": [
+            "Texture.default",
+            
+            "Texture.coal_ore",
+            "Texture.deepslate_coal_ore",
+
+            "Texture.copper_ore",
+            "Texture.deepslate_copper_ore",
+            "Texture.raw_copper_block",
+
+            "Texture.iron_ore",
+            "Texture.deepslate_iron_ore",
+            "Texture.raw_iron_block",
+
+            "Texture.gold_ore",
+            "Texture.deepslate_gold_ore",
+            "Texture.raw_gold_block",
+            "Texture.nether_gold_ore",
+
+            "Texture.diamond_ore",
+            "Texture.deepslate_diamond_ore",
+
+            "Texture.emerald_ore",
+            "Texture.deepslate_emerald_ore",
+            
+            "Texture.redstone_ore",
+            "Texture.deepslate_redstone_ore",
+
+            "Texture.lapis_ore",
+            "Texture.deepslate_lapis_ore",
+
+            "Texture.budding_amethyst",
+
+            "Texture.quartz_ore",
+
+            "Texture.ancient_debris"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": ["Array.skins[q.variant]"]
+    }
+  }
+}
