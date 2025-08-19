@@ -2,41 +2,57 @@
   "format_version": 2,
   "header": {
     "description": "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv1.1.0",
-    "name": "The Ore Finder Project - BP",
-    "dev_uuid": "84eb68c8-1ff7-42ba-b591-e7b856b7eb4f",
-    "live_uuid": "744d717c-e229-40e7-9ead-b693faa9cc0c",
+    "name": "§2The Ore Finder Project - DBP",
     "uuid": "84eb68c8-1ff7-42ba-b591-e7b856b7eb4f",
-    "version": [1, 1, 0],
-    "min_engine_version": [1, 21, 20]
+    "version": [
+      1,
+      1,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      20
+    ]
   },
   "dependencies": [
     {
-      "dev-uuid": "75b067b9-59db-4a36-99b6-98bd58556af7",
-      "live-uuid": "abbd0d2c-9ae4-4368-a714-60d988b9dcc9",
       "uuid": "75b067b9-59db-4a36-99b6-98bd58556af7",
-      "version": [1, 1, 0]
+      "version": [
+        1,
+        1,
+        1
+      ]
     },
     {
       "module_name": "@minecraft/server",
-      "version": "1.13.0"
+      "version": "2.1.0"
     },
     {
       "module_name": "@minecraft/server-ui",
-      "version": "1.1.0"
+      "version": "2.0.0"
     }
   ],
   "modules": [
     {
       "type": "data",
       "uuid": "66fdb1f4-e556-42af-bb37-0937acda5c41",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        0
+      ]
     },
     {
       "type": "script",
       "language": "javascript",
       "entry": "scripts/main.js",
       "uuid": "6d6ad76b-2fc3-4f8c-8725-0fce4535f7b0",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        0
+      ]
     }
   ]
 }

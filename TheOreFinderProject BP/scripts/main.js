@@ -171,9 +171,13 @@ function showGoggleOptions(player, item) {
     const modalForm = new ModalFormData().title({
         translate: item.typeId + "_options",
     });
-    modalForm.dropdown("\nEffect", effects, options.effect);
-    modalForm.dropdown("Indicator Type", indicators, options.indicator);
-    modalForm.toggle("Double Distance\n\n", options.dd);
+    if (player.graphicsMode != "Deferred") {
+        modalForm.label("                §4Glow disabled\n§6To enable glow, §fSave & Quit§6. Then\nset §fSettings§6 > §fVideo§6 >§f Graphics Mode§6 to §fVibrant Visuals§6");
+        modalForm.divider();
+    }
+    modalForm.dropdown("\nEffect (When worn on head)", effects, { defaultValueIndex: options.effect });
+    modalForm.dropdown("Indicator Type", indicators, { defaultValueIndex: options.indicator });
+    modalForm.toggle("Double Distance", { defaultValue: options.dd });
     modalForm.submitButton("Save Options");
     modalForm
         .show(player)
@@ -227,7 +231,7 @@ function build_lore(item) {
     }
     item.setLore(lore);
 }
-world.beforeEvents.worldInitialize.subscribe((initEvent) => {
+system.beforeEvents.startup.subscribe((initEvent) => {
     initEvent.blockComponentRegistry.registerCustomComponent("the_ore_finder_project:ore_finder_component", {
         onPlace(arg) {
             let pos = arg.block.location;

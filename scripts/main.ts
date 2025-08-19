@@ -118,7 +118,7 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         switch (JSON.parse(options).indicator) {
           case 1: {
             p.setDynamicProperty(block_name + "_indicator", "orb")
-            break            
+            break
           }
           case 2: {
             p.setDynamicProperty(block_name + "_indicator", "outline")
@@ -296,9 +296,14 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
     translate: item.typeId + "_options",
   })
 
-  modalForm.dropdown("\nEffect", effects, options.effect)
-  modalForm.dropdown("Indicator Type", indicators, options.indicator)
-  modalForm.toggle("Double Distance\n\n", options.dd)
+  if (player.graphicsMode != "Deferred") {
+    modalForm.label("                §4Glow disabled\n§6To enable glow, §fSave & Quit§6. Then\nset §fSettings§6 > §fVideo§6 >§f Graphics Mode§6 to §fVibrant Visuals§6")
+    modalForm.divider()
+  }
+
+  modalForm.dropdown("\nEffect (When worn on head)", effects, { defaultValueIndex: options.effect })
+  modalForm.dropdown("Indicator Type", indicators, { defaultValueIndex: options.indicator })
+  modalForm.toggle("Double Distance", { defaultValue: options.dd })
   modalForm.submitButton("Save Options")
   modalForm
     .show(player)
@@ -358,7 +363,7 @@ function build_lore(item: ContainerSlot) {
 /**
  * Watch for our placeholder block (onPlace) then spawn in the apropriate entity
  */
-world.beforeEvents.worldInitialize.subscribe((initEvent) => {
+system.beforeEvents.startup.subscribe((initEvent) => {
   initEvent.blockComponentRegistry.registerCustomComponent(
     "the_ore_finder_project:ore_finder_component",
     {
@@ -375,7 +380,7 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
         // grab the color from the closest player's dynamic properties
         let p = getClosestPlayer(pos)
         let the_color = p.getDynamicProperty(the_name + "_color")
-      
+
         // grab the indicator entity type
         let the_indicator = p.getDynamicProperty(the_name + "_indicator")
 
@@ -407,10 +412,10 @@ world.beforeEvents.worldInitialize.subscribe((initEvent) => {
           // trigger event to set the color/texture
           if (the_indicator == 'ore') {
             ore.triggerEvent("the_ore_finder_project:" + block_name)
-          }else {
+          } else {
             ore.triggerEvent("the_ore_finder_project:" + the_color)
           }
-          
+
           ore.addTag("torp_entity")
           ore.addTag("visible")
           ore.addTag(arg.block.type.id)
