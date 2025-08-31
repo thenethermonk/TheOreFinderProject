@@ -3,6 +3,8 @@ param(
     [string]$Version
 )
 
+$ver = $Version.replace('_', '.')
+
 If (!$PSBoundParameters.ContainsKey('Version')) {
     Write-Host "-Version parameter must be set, and it must be formatted 1_0_0"
     exit 1
@@ -52,23 +54,25 @@ Compress-Archive -Path "TheOreFinderProject BP", "TheOreFinderProject RP" -Desti
 Move-Item -Path "TheOreFinderProject_$Version.zip" -Destination "TheOreFinderProject_$Version.mcaddon" -Force
 
 # update the BP manifest back to dev settings
-$data = Get-Content 'TheOreFinderProject BP\manifest.json' | ConvertFrom-Json
-$data.header.name = '§2The Ore Finder Project - DBP'
+$data = Get-Content "TheOreFinderProject BP\manifest.json" | ConvertFrom-Json
+$data.header.name = "§2The Ore Finder Project - DBP"
+$data.header.description = "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
 $data.header.uuid = $BPD_UUID
 $data.header.version = $intArray
 $data.dependencies[0].uuid = $RPD_UUID
 $data.dependencies[0].version = $intArray
 $updatedJsonContent = $data | ConvertTo-Json -Depth 5
-Set-Content -Path 'TheOreFinderProject BP\manifest.json' -Value $updatedJsonContent
+Set-Content -Path "TheOreFinderProject BP\manifest.json" -Value $updatedJsonContent
 
 # update the RP manifest back to dev settings
-$data = Get-Content 'TheOreFinderProject RP\manifest.json' | ConvertFrom-Json
-$data.header.name = '§2The Ore Finder Project - DRP'
+$data = Get-Content "TheOreFinderProject RP\manifest.json" | ConvertFrom-Json
+$data.header.name = "§2The Ore Finder Project - DRP"
+$data.header.description = "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
 $data.header.uuid = $RPD_UUID
 $data.header.version = $intArray
 $data.dependencies[0].uuid = $BPD_UUID
 $data.dependencies[0].version = $intArray
 $updatedJsonContent = $data | ConvertTo-Json -Depth 5
-Set-Content -Path 'TheOreFinderProject RP\manifest.json' -Value $updatedJsonContent
+Set-Content -Path "TheOreFinderProject RP\manifest.json" -Value $updatedJsonContent
 
 Write-Host "DONE!"
