@@ -48,9 +48,37 @@ function getEquipmentOptions(p, slot) {
         item.getTags().includes("the_ore_finder_project:goggles")) {
         let name = String(item.typeId);
         let find_blocks = [];
-        let options = "{}";
+        let options_string = "{}";
+        let options = {
+            dd: false, effect: 1, indicator: 0, ores: {
+                coal: true,
+                copper: true,
+                gold: true,
+                iron: true,
+                diamond: true,
+                emerald: true,
+                budding_amethyst: true,
+                lapis: true,
+                redstone: true,
+                quartz: true,
+                ancient_debris: true
+            }
+        };
         if (item.getDynamicProperty("options") != undefined) {
-            options = item.getDynamicProperty("options");
+            options_string = item.getDynamicProperty("options");
+            options = JSON.parse(options_string);
+        }
+        if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+            options.indicator = 0;
+        }
+        if (typeof options.dd !== 'boolean') {
+            if (options.dd == 1)
+                options.dd = true;
+            else
+                options.dd = false;
+        }
+        if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+            options.effect = 1;
         }
         item.getTags().forEach((tag) => {
             if (tag.startsWith("findblock:")) {
@@ -58,7 +86,7 @@ function getEquipmentOptions(p, slot) {
                 let color = na.shift();
                 let block_name = tag.replace("findblock:", "").replace(color + ":", "");
                 p.setDynamicProperty(block_name + "_color", color);
-                switch (JSON.parse(options).indicator) {
+                switch (options.indicator) {
                     case 1: {
                         p.setDynamicProperty(block_name + "_indicator", "orb");
                         break;
@@ -76,7 +104,25 @@ function getEquipmentOptions(p, slot) {
                         break;
                     }
                 }
-                find_blocks.push(block_name);
+                let the_name = block_name;
+                the_name = the_name.substring(the_name.indexOf(":") + 1);
+                the_name = the_name.replace("minecraft:", "");
+                the_name = the_name.replace("lit_", "");
+                the_name = the_name.replace("deepslate_", "");
+                the_name = the_name.replace("nether_", "");
+                the_name = the_name.replace("raw_", "");
+                the_name = the_name.replace("_block", "");
+                the_name = the_name.replace("_ore", "");
+                if (name == "the_ore_finder_project:overworld_goggles" || name == "the_ore_finder_project:universal_goggles") {
+                    for (const [key, value] of Object.entries(options.ores)) {
+                        if (key == the_name && value === true) {
+                            find_blocks.push(block_name);
+                        }
+                    }
+                }
+                else {
+                    find_blocks.push(block_name);
+                }
             }
         });
         ops = {
@@ -84,7 +130,7 @@ function getEquipmentOptions(p, slot) {
                 ...{ slot: slot },
                 ...{ item: item },
                 ...{ findblocks: find_blocks },
-                ...Object(JSON.parse(options)),
+                ...Object(options),
             },
         };
     }
@@ -155,7 +201,21 @@ world.beforeEvents.itemUse.subscribe((e) => {
     }
 });
 function showGoggleOptions(player, item) {
-    let options = { dd: false, effect: 1, indicator: 0 };
+    let options = {
+        dd: false, effect: 1, indicator: 0, ores: {
+            coal: true,
+            copper: true,
+            gold: true,
+            iron: true,
+            diamond: true,
+            emerald: true,
+            budding_amethyst: true,
+            lapis: true,
+            redstone: true,
+            quartz: true,
+            ancient_debris: true
+        }
+    };
     let effects = ["None", "Dynamic Torch"];
     let indicators = ["Box", "Orb", "Outline", "Ore"];
     if (item.getTags().includes("allow_nightvision")) {
@@ -168,6 +228,18 @@ function showGoggleOptions(player, item) {
             ...JSON.parse(item.getDynamicProperty("options")),
         };
     }
+    if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+        options.indicator = 0;
+    }
+    if (typeof options.dd !== 'boolean') {
+        if (options.dd == 1)
+            options.dd = true;
+        else
+            options.dd = false;
+    }
+    if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+        options.effect = 1;
+    }
     const modalForm = new ModalFormData().title({
         translate: item.typeId + "_options",
     });
@@ -178,16 +250,65 @@ function showGoggleOptions(player, item) {
     modalForm.dropdown("\nEffect (When worn on head)", effects, { defaultValueIndex: options.effect });
     modalForm.dropdown("Indicator Type", indicators, { defaultValueIndex: options.indicator });
     modalForm.toggle("Double Distance", { defaultValue: options.dd });
+    if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+        modalForm.divider();
+        modalForm.label("Find Ores§6");
+        modalForm.toggle("§8Coal Ore§6", { defaultValue: options.ores.coal });
+        modalForm.toggle("§nCopper Ore§6", { defaultValue: options.ores.copper });
+        modalForm.toggle("§pGold Ore§6", { defaultValue: options.ores.gold });
+        modalForm.toggle("§iIron Ore§6", { defaultValue: options.ores.iron });
+        modalForm.toggle("§sDiamond Ore§6", { defaultValue: options.ores.diamond });
+        modalForm.toggle("§qEmerald Ore§6", { defaultValue: options.ores.emerald });
+        modalForm.toggle("§uBudding Amethyst§6", { defaultValue: options.ores.budding_amethyst });
+        modalForm.toggle("§tLapis Lazuli§6", { defaultValue: options.ores.lapis });
+        modalForm.toggle("§mRedstone§6", { defaultValue: options.ores.redstone });
+    }
+    if (item.typeId == "the_ore_finder_project:universal_goggles") {
+        modalForm.toggle("§hQuartz§6", { defaultValue: options.ores.quartz });
+        modalForm.toggle("§jAncient Debris§6", { defaultValue: options.ores.ancient_debris });
+    }
+    let start = 0;
+    if (player.graphicsMode != "Deferred") {
+        start = 2;
+    }
+    modalForm.divider();
     modalForm.submitButton("Save Options");
     modalForm
         .show(player)
         .then((formData) => {
         if (formData.formValues) {
             let saveOptions = {
-                dd: formData.formValues[2],
-                effect: formData.formValues[0],
-                indicator: formData.formValues[1],
+                dd: formData.formValues[start + 2],
+                effect: formData.formValues[start],
+                indicator: formData.formValues[start + 1],
+                ores: {}
             };
+            if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+                saveOptions = {
+                    ...saveOptions,
+                    ores: {
+                        coal: formData.formValues[start + 5],
+                        copper: formData.formValues[start + 6],
+                        gold: formData.formValues[start + 7],
+                        iron: formData.formValues[start + 8],
+                        diamond: formData.formValues[start + 9],
+                        emerald: formData.formValues[start + 10],
+                        budding_amethyst: formData.formValues[start + 11],
+                        lapis: formData.formValues[start + 12],
+                        redstone: formData.formValues[start + 13],
+                    }
+                };
+            }
+            if (item.typeId == "the_ore_finder_project:universal_goggles") {
+                saveOptions = {
+                    ...saveOptions,
+                    ores: {
+                        ...saveOptions.ores,
+                        quartz: formData.formValues[start + 14],
+                        ancient_debris: formData.formValues[start + 15],
+                    }
+                };
+            }
             item.setDynamicProperty("options", JSON.stringify(saveOptions));
             build_lore(item);
         }
