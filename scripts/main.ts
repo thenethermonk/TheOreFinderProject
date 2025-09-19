@@ -9,6 +9,8 @@ import {
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
+const MIN_DISTANCE = 2
+
 /**
  * this runInterval is set to run 4 times a second
  *
@@ -49,12 +51,14 @@ system.runInterval(() => {
 
     // if an entity doesn't have the visible tag, kill it
     player.runCommand(
-      "execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s"
+      `execute as @e[tag=torp_entity, tag=p${player.id}] at @s unless entity @s[tag=visible] run kill @s`
     )
     // remove the visible tag
     player.runCommand(
-      "execute as @e[tag=visible] at @s run tag @s remove visible"
+      `execute as @e[tag=torp_entity, tag=p${player.id}, tag=visible] at @s run tag @s remove visible`
     )
+
+    killEntitiesNearPlayer(player)
   })
 }, 5)
 
@@ -236,32 +240,30 @@ function find_blocks(
         prefix += ":"
       }
 
-      // we need to set a variable for the -y chord as anything below -64 will break the fill function
-      let negY = -15
-      if (player.location.y < -49) {
-        negY = -64 - player.location.y
-      }
 
-      // use an odd number, or 0 0 won't be counted!
-      let fill_array = ["~-15 ~" + negY + " ~-15 ~15 ~15 ~15"]
-
+      // set distance
+      let d = 15
       if (double_distance) {
-        let negY = -30
-        if (player.location.y < -34) {
-          negY = -64 - player.location.y
-        }
-
-        fill_array = [
-          "~ ~ ~ ~30 ~30 ~30",
-          "~ ~ ~ ~30 ~30 ~-30",
-          "~ ~ ~ ~30 ~" + negY + " ~30",
-          "~ ~ ~ ~30 ~" + negY + " ~-30",
-          "~ ~ ~ ~-30 ~30 ~30",
-          "~ ~ ~ ~-30 ~30 ~-30",
-          "~ ~ ~ ~-30 ~" + negY + " ~30",
-          "~ ~ ~ ~-30 ~" + negY + " ~-30",
-        ]
+        d = 30
       }
+
+      // we need to make sure we don't go below -64
+      let nY = -1 * d
+      if (player.location.y < -64 + d) {
+        nY = -64 - player.location.y
+      }
+
+      // build the fill locations
+      let fill_array = [
+        `~ ~ ~ ~${d} ~${d} ~${d}`,
+        `~ ~ ~ ~${d} ~${d} ~-${d}`,
+        `~ ~ ~ ~${d} ~${nY} ~${d}`,
+        `~ ~ ~ ~${d} ~${nY} ~-${d}`,
+        `~ ~ ~ ~-${d} ~${d} ~${d}`,
+        `~ ~ ~ ~-${d} ~${d} ~-${d}`,
+        `~ ~ ~ ~-${d} ~${nY} ~${d}`,
+        `~ ~ ~ ~-${d} ~${nY} ~-${d}`,
+      ]
 
       fill_array.forEach((locs) => {
         // replace the ore
@@ -275,12 +277,23 @@ function find_blocks(
       })
 
       // tag the entities so they don't get rebuilt
-      let tag_range = double_distance
-        ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
-        : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30"
-      player.runCommand(
-        `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`
-      )
+      let tag_range_array = [
+        `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=${d}`,
+        `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=-${d}`,
+        `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=${d}`,
+        `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
+        `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=${d}`,
+        `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=-${d}`,
+        `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=${d}`,
+        `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
+      ]
+
+      tag_range_array.forEach((tag_range) => {
+        player.runCommand(
+          `execute as @s run tag @e[tag=torp_entity, tag=p${player.id}, tag=${full_name}, ${tag_range}] add visible`
+        )
+      })
+
     })
   }
 }
@@ -370,7 +383,9 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   }
 
   // build the modal
-  const modalForm = new ModalFormData().title({
+  const modalForm = new ModalFormData()
+
+  modalForm.title({
     translate: item.typeId + "_options",
   })
 
@@ -401,16 +416,15 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
     modalForm.toggle("§jAncient Debris§6", { defaultValue: options.ores.ancient_debris })
   }
 
-
   // because form labels and dividers are counted as formValues, we need to compensate for them
   let start = 0
   if (player.graphicsMode != "Deferred") {
     start = 2
   }
 
-
   modalForm.divider()
   modalForm.submitButton("Save Options")
+
   modalForm
     .show(player)
     .then((formData) => {
@@ -540,20 +554,27 @@ system.beforeEvents.startup.subscribe((initEvent) => {
           pos.y += 0.5
           pos.z += 0.5
 
-          const ore = arg.dimension.spawnEntity(
-            "the_ore_finder_project:" + the_indicator + "_indicator_entity",
-            pos
-          )
-          // trigger event to set the color/texture
-          if (the_indicator == 'ore') {
-            ore.triggerEvent("the_ore_finder_project:" + block_name)
-          } else {
-            ore.triggerEvent("the_ore_finder_project:" + the_color)
-          }
+          // don't spawn if player is too close
+          const dist = distanceFromPlayer(p, pos)
 
-          ore.addTag("torp_entity")
-          ore.addTag("visible")
-          ore.addTag(arg.block.type.id)
+          if (dist > MIN_DISTANCE) {
+            // spawn the entity
+            const ore = arg.dimension.spawnEntity(
+              "the_ore_finder_project:" + the_indicator + "_indicator_entity",
+              pos
+            )
+            // trigger event to set the color/texture
+            if (the_indicator == 'ore') {
+              ore.triggerEvent("the_ore_finder_project:" + block_name)
+            } else {
+              ore.triggerEvent("the_ore_finder_project:" + the_color)
+            }
+
+            ore.addTag("torp_entity")
+            ore.addTag(`p${p.id}`)
+            ore.addTag("visible")
+            ore.addTag(arg.block.type.id)
+          }
         }
       },
     }
@@ -604,5 +625,24 @@ function detectItemChanged(p: Player, slot: EquipmentSlot) {
 }
 
 function kill_all_indicators(p: Player) {
-  p.runCommand("execute as @e[tag=torp_entity] at @s run kill @s")
+  p.runCommand(`execute as @e[tag=torp_entity, tag=p${p.id}] at @s run kill @s`)
+}
+
+function killEntitiesNearPlayer(player: Player) {
+  const entities = player.dimension.getEntities({ tags: ["torp_entity", `p${player.id}`] })
+  entities.forEach((ent) => {
+    const dist = distanceFromPlayer(player, ent.location)
+    if (dist <= MIN_DISTANCE) {
+      ent.kill()
+    }
+  })
+}
+
+function distanceFromPlayer(p: Player, loc: Vector3) {
+  const dx = loc.x - p.location.x
+  const dy = loc.y - p.location.y - 1.62
+  const dz = loc.z - p.location.z
+  const dist = Math.ceil(Math.sqrt(dx * dx + dy * dy + dz * dz))
+
+  return dist
 }

@@ -1,5 +1,6 @@
 import { world, system, EquipmentSlot, } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
+const MIN_DISTANCE = 2;
 system.runInterval(() => {
     world.getPlayers().forEach((player) => {
         player.runCommand('execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]');
@@ -20,8 +21,9 @@ system.runInterval(() => {
                 }
             });
         }
-        player.runCommand("execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s");
-        player.runCommand("execute as @e[tag=visible] at @s run tag @s remove visible");
+        player.runCommand(`execute as @e[tag=torp_entity, tag=p${player.id}] at @s unless entity @s[tag=visible] run kill @s`);
+        player.runCommand(`execute as @e[tag=torp_entity, tag=p${player.id}, tag=visible] at @s run tag @s remove visible`);
+        killEntitiesNearPlayer(player);
     });
 }, 5);
 function getAllEquipmentOptions(p) {
@@ -154,35 +156,41 @@ function find_blocks(player, block_names, double_distance = false) {
                 [prefix, name] = name.split(":");
                 prefix += ":";
             }
-            let negY = -15;
-            if (player.location.y < -49) {
-                negY = -64 - player.location.y;
-            }
-            let fill_array = ["~-15 ~" + negY + " ~-15 ~15 ~15 ~15"];
+            let d = 15;
             if (double_distance) {
-                let negY = -30;
-                if (player.location.y < -34) {
-                    negY = -64 - player.location.y;
-                }
-                fill_array = [
-                    "~ ~ ~ ~30 ~30 ~30",
-                    "~ ~ ~ ~30 ~30 ~-30",
-                    "~ ~ ~ ~30 ~" + negY + " ~30",
-                    "~ ~ ~ ~30 ~" + negY + " ~-30",
-                    "~ ~ ~ ~-30 ~30 ~30",
-                    "~ ~ ~ ~-30 ~30 ~-30",
-                    "~ ~ ~ ~-30 ~" + negY + " ~30",
-                    "~ ~ ~ ~-30 ~" + negY + " ~-30",
-                ];
+                d = 30;
             }
+            let nY = -1 * d;
+            if (player.location.y < -64 + d) {
+                nY = -64 - player.location.y;
+            }
+            let fill_array = [
+                `~ ~ ~ ~${d} ~${d} ~${d}`,
+                `~ ~ ~ ~${d} ~${d} ~-${d}`,
+                `~ ~ ~ ~${d} ~${nY} ~${d}`,
+                `~ ~ ~ ~${d} ~${nY} ~-${d}`,
+                `~ ~ ~ ~-${d} ~${d} ~${d}`,
+                `~ ~ ~ ~-${d} ~${d} ~-${d}`,
+                `~ ~ ~ ~-${d} ~${nY} ~${d}`,
+                `~ ~ ~ ~-${d} ~${nY} ~-${d}`,
+            ];
             fill_array.forEach((locs) => {
                 player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
                 player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
             });
-            let tag_range = double_distance
-                ? "x=~-30.5, dx=60, y=~-30.5, dy=60, z=~-30.5, dz=60"
-                : "x=~-15.5, dx=30, y=~-15.5, dy=30, z=~-15.5, dz=30";
-            player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
+            let tag_range_array = [
+                `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=${d}`,
+                `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=-${d}`,
+                `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=${d}`,
+                `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
+                `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=${d}`,
+                `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=-${d}`,
+                `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=${d}`,
+                `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
+            ];
+            tag_range_array.forEach((tag_range) => {
+                player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=p${player.id}, tag=${full_name}, ${tag_range}] add visible`);
+            });
         });
     }
 }
@@ -240,7 +248,8 @@ function showGoggleOptions(player, item) {
     if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
         options.effect = 1;
     }
-    const modalForm = new ModalFormData().title({
+    const modalForm = new ModalFormData();
+    modalForm.title({
         translate: item.typeId + "_options",
     });
     if (player.graphicsMode != "Deferred") {
@@ -375,16 +384,20 @@ system.beforeEvents.startup.subscribe((initEvent) => {
                 pos.x += 0.5;
                 pos.y += 0.5;
                 pos.z += 0.5;
-                const ore = arg.dimension.spawnEntity("the_ore_finder_project:" + the_indicator + "_indicator_entity", pos);
-                if (the_indicator == 'ore') {
-                    ore.triggerEvent("the_ore_finder_project:" + block_name);
+                const dist = distanceFromPlayer(p, pos);
+                if (dist > MIN_DISTANCE) {
+                    const ore = arg.dimension.spawnEntity("the_ore_finder_project:" + the_indicator + "_indicator_entity", pos);
+                    if (the_indicator == 'ore') {
+                        ore.triggerEvent("the_ore_finder_project:" + block_name);
+                    }
+                    else {
+                        ore.triggerEvent("the_ore_finder_project:" + the_color);
+                    }
+                    ore.addTag("torp_entity");
+                    ore.addTag(`p${p.id}`);
+                    ore.addTag("visible");
+                    ore.addTag(arg.block.type.id);
                 }
-                else {
-                    ore.triggerEvent("the_ore_finder_project:" + the_color);
-                }
-                ore.addTag("torp_entity");
-                ore.addTag("visible");
-                ore.addTag(arg.block.type.id);
             }
         },
     });
@@ -429,5 +442,21 @@ function detectItemChanged(p, slot) {
     return false;
 }
 function kill_all_indicators(p) {
-    p.runCommand("execute as @e[tag=torp_entity] at @s run kill @s");
+    p.runCommand(`execute as @e[tag=torp_entity, tag=p${p.id}] at @s run kill @s`);
+}
+function killEntitiesNearPlayer(player) {
+    const entities = player.dimension.getEntities({ tags: ["torp_entity", `p${player.id}`] });
+    entities.forEach((ent) => {
+        const dist = distanceFromPlayer(player, ent.location);
+        if (dist <= MIN_DISTANCE) {
+            ent.kill();
+        }
+    });
+}
+function distanceFromPlayer(p, loc) {
+    const dx = loc.x - p.location.x;
+    const dy = loc.y - p.location.y - 1.62;
+    const dz = loc.z - p.location.z;
+    const dist = Math.ceil(Math.sqrt(dx * dx + dy * dy + dz * dz));
+    return dist;
 }
