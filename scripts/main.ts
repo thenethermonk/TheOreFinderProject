@@ -16,7 +16,12 @@ const MIN_DISTANCE = 2
  *
  */
 system.runInterval(() => {
-  world.getPlayers().forEach((player) => {
+  const players = world.getPlayers()
+
+  // if no players, return (this only happens as the world is loading)
+  if (players.length == 0) return
+
+  players.forEach((player) => {
     player.runCommand(
       'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]'
     )
@@ -49,18 +54,19 @@ system.runInterval(() => {
       })
     }
 
-    // if an entity doesn't have the visible tag, kill it
-    player.runCommand(
-      `execute as @e[tag=torp_entity, tag=p${player.id}] at @s unless entity @s[tag=visible] run kill @s`
-    )
-    // remove the visible tag
-    player.runCommand(
-      `execute as @e[tag=torp_entity, tag=p${player.id}, tag=visible] at @s run tag @s remove visible`
-    )
-
     killEntitiesNearPlayer(player)
   })
-}, 5)
+
+  // if an entity doesn't have the visible tag, kill it
+  players[0].runCommand(
+    `execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s`
+  )
+  // remove the visible tag
+  players[0].runCommand(
+    `execute as @e[tag=torp_entity, tag=visible] at @s run tag @s remove visible`
+  )
+
+}, 4)
 
 function getAllEquipmentOptions(p: Player) {
   let ops = {}
@@ -90,8 +96,40 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
   let equippable = p.getComponent("equippable") as EntityEquippableComponent
   let item = equippable?.getEquipmentSlot(slot)
 
+  // tags can be multiple types, so we break it down to a json string
+  let prevTagsRaw = p.getDynamicProperty(slot + "_tags") as string | undefined
+  let prevTags: string[] | undefined = undefined
+  if (prevTagsRaw !== undefined) {
+    try {
+      prevTags = JSON.parse(prevTagsRaw)
+    } catch {
+      prevTags = undefined
+    }
+  }
+
+  let itemChanged = false
+  let block_name = undefined
   if (detectItemChanged(p, slot)) {
     kill_all_indicators(p)
+
+    // item changed, so we need to clear the old item's color and indicator based on prevTags
+    if (prevTags != undefined) {
+      prevTags.forEach((tag: string) => {
+        if (tag.startsWith("findblock:")) {
+          // as we're parsing through, set player dynamic properties for the colors
+          let na = tag.replace("findblock:", "").split(":")
+          let color = na.shift()
+          block_name = tag.replace("findblock:", "").replace(color + ":", "")
+          p.setDynamicProperty(block_name + "_color", undefined)
+          p.setDynamicProperty(block_name + "_indicator", undefined)
+          //console.log([p.getDynamicProperty(block_name + "_indicator")]);
+        }
+      })
+    }
+
+    itemChanged = true
+    // now update prevTags to current item
+    p.setDynamicProperty(slot + "_tags", JSON.stringify(item.getTags()))
   }
 
   if (
@@ -137,11 +175,10 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
     // parse through the goggle tags looking for findblock: tags
     item.getTags().forEach((tag: string) => {
       if (tag.startsWith("findblock:")) {
-        // as we're parsing through, set world dynamic properties for the colors
+        // as we're parsing through, set player dynamic properties for the colors
         let na = tag.replace("findblock:", "").split(":")
         let color = na.shift()
         let block_name = tag.replace("findblock:", "").replace(color + ":", "")
-
 
         // add entity switch to block_name player dynamic property
         p.setDynamicProperty(block_name + "_color", color)
@@ -204,8 +241,26 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
     }
   }
 
+  if (itemChanged) {
+    //console.log([p.getDynamicProperty(block_name + "_indicator")]);
+  }
+
   return ops
 }
+
+// we need to kill all entities owned by a player when they leave
+world.afterEvents.playerLeave.subscribe((event) => {
+  const p = world.getAllPlayers()[0]
+  const entities = p.dimension.getEntities({
+    location: p.location,
+    minDistance: 30
+  })
+  for (const entity of entities) {
+    if (entity.hasTag("torp_entity")) {
+      entity.kill
+    }
+  }
+})
 
 /**
  * function find_blocks is the core of the addon, it does a fill replace around the player based on the options passed to it
@@ -290,7 +345,7 @@ function find_blocks(
 
       tag_range_array.forEach((tag_range) => {
         player.runCommand(
-          `execute as @s run tag @e[tag=torp_entity, tag=p${player.id}, tag=${full_name}, ${tag_range}] add visible`
+          `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`
         )
       })
 
@@ -517,6 +572,7 @@ system.beforeEvents.startup.subscribe((initEvent) => {
     "the_ore_finder_project:ore_finder_component",
     {
       onPlace(arg) {
+
         // get the location of the current block
         let pos = arg.block.location
 
@@ -527,11 +583,44 @@ system.beforeEvents.startup.subscribe((initEvent) => {
         let the_name = arg.block.type.id
 
         // grab the color from the closest player's dynamic properties
-        let p = getClosestPlayer(pos)
-        let the_color = p.getDynamicProperty(the_name + "_color")
+        // closest player is causing bug!!!
+        //let p = getClosestPlayer(pos)
+        // so we're going to get players in the current dimension that have the dynamic property that picks the color and use the first one
+        // this will only become an issue if players are ever allowed to change their ore colors
+
+        let players: Player[] = world.getPlayers().filter(p => p.getDynamicProperty(the_name + "_color") !== undefined)
+        /*        let players: Player[] = world.getPlayers()
+                players.forEach((p) => {
+                  let x = p.getDynamicProperty(the_name + "_indicator")
+                  console.log(p.id + " - " + x);
+                  let i = p.getDynamicPropertyIds()
+                  console.log(JSON.stringify(i))
+                })*/
+
+        // we need to sort by distance from block location
+        const playersWithDistance = players.map(player => ({
+          player: player,
+          distance: calculateDistance(player.location, pos)
+        }));
+
+        playersWithDistance.sort((a, b) => a.distance - b.distance);
+
+        players = playersWithDistance.map(item => item.player)
+
+        if (players[0] == undefined) {
+          return false
+        }
+
+        let p = players[0]
+
+        const the_color = p.getDynamicProperty(the_name + "_color")
 
         // grab the indicator entity type
-        let the_indicator = p.getDynamicProperty(the_name + "_indicator")
+        const the_indicator = p.getDynamicProperty(the_name + "_indicator")
+
+        //world.sendMessage(the_name + " - " + the_indicator)
+        //showPlayerDynamicProperties(p)
+        //world.sendMessage(p.id + " - " + the_indicator)
 
         // pull out the ore name for triggering the entity event that switches it's texture
         // start with the namespace
@@ -547,9 +636,25 @@ system.beforeEvents.startup.subscribe((initEvent) => {
         the_name = the_name.replace("_block", "")
         the_name = the_name.replace("_ore", "")
 
+        let entTypeId = "the_ore_finder_project:" + the_indicator + "_indicator_entity"
+
         // Make sure the indicator entity doesn't already exist at this location, and Summon the indicator entity
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)
-        if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
+        let ent = entlist.find((e) => e.hasTag("torp_entity"))
+
+        //console.log(JSON.stringify(entlist))
+
+        if (ent !== undefined) {
+          // entity exists, we need to kill it if it's wrong
+          if (ent.typeId != entTypeId) {
+            ent.kill()
+            ent = undefined
+          }
+        }
+
+
+
+        if (ent === undefined) {
           pos.x += 0.5
           pos.y += 0.5
           pos.z += 0.5
@@ -559,10 +664,7 @@ system.beforeEvents.startup.subscribe((initEvent) => {
 
           if (dist > MIN_DISTANCE) {
             // spawn the entity
-            const ore = arg.dimension.spawnEntity(
-              "the_ore_finder_project:" + the_indicator + "_indicator_entity",
-              pos
-            )
+            const ore = arg.dimension.spawnEntity(entTypeId, pos)
             // trigger event to set the color/texture
             if (the_indicator == 'ore') {
               ore.triggerEvent("the_ore_finder_project:" + block_name)
@@ -571,7 +673,7 @@ system.beforeEvents.startup.subscribe((initEvent) => {
             }
 
             ore.addTag("torp_entity")
-            ore.addTag(`p${p.id}`)
+            //ore.addTag(`p${p.id}`)
             ore.addTag("visible")
             ore.addTag(arg.block.type.id)
           }
@@ -625,11 +727,11 @@ function detectItemChanged(p: Player, slot: EquipmentSlot) {
 }
 
 function kill_all_indicators(p: Player) {
-  p.runCommand(`execute as @e[tag=torp_entity, tag=p${p.id}] at @s run kill @s`)
+  p.runCommand(`execute as @e[tag=torp_entity] at @s run kill @s`)
 }
 
 function killEntitiesNearPlayer(player: Player) {
-  const entities = player.dimension.getEntities({ tags: ["torp_entity", `p${player.id}`] })
+  const entities = player.dimension.getEntities({ tags: ["torp_entity"] })
   entities.forEach((ent) => {
     const dist = distanceFromPlayer(player, ent.location)
     if (dist <= MIN_DISTANCE) {
@@ -645,4 +747,27 @@ function distanceFromPlayer(p: Player, loc: Vector3) {
   const dist = Math.ceil(Math.sqrt(dx * dx + dy * dy + dz * dz))
 
   return dist
+}
+
+function calculateDistance(pos1: Vector3, pos2: Vector3): number {
+  const dx = pos1.x - pos2.x;
+  const dy = pos1.y - pos2.y;
+  const dz = pos1.z - pos2.z;
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+
+// most likely going away
+
+function showPlayerDynamicProperties(player: Player) {
+  const names = player.getDynamicPropertyIds()
+
+  if (names.length === 0) {
+    world.sendMessage("You have no dynamic properties set.")
+    return
+  }
+  names.forEach(name => {
+    const value = player.getDynamicProperty(name)
+    player.sendMessage(`${name}: ${JSON.stringify(value)}`)
+  })
 }

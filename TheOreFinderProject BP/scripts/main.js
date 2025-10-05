@@ -2,7 +2,10 @@ import { world, system, EquipmentSlot, } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 const MIN_DISTANCE = 2;
 system.runInterval(() => {
-    world.getPlayers().forEach((player) => {
+    const players = world.getPlayers();
+    if (players.length == 0)
+        return;
+    players.forEach((player) => {
         player.runCommand('execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]');
         player.runCommand("execute as @e[tag=night_vision] at @s run tag @s remove night_vision");
         let ops = getAllEquipmentOptions(player);
@@ -21,11 +24,11 @@ system.runInterval(() => {
                 }
             });
         }
-        player.runCommand(`execute as @e[tag=torp_entity, tag=p${player.id}] at @s unless entity @s[tag=visible] run kill @s`);
-        player.runCommand(`execute as @e[tag=torp_entity, tag=p${player.id}, tag=visible] at @s run tag @s remove visible`);
         killEntitiesNearPlayer(player);
     });
-}, 5);
+    players[0].runCommand(`execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s`);
+    players[0].runCommand(`execute as @e[tag=torp_entity, tag=visible] at @s run tag @s remove visible`);
+}, 4);
 function getAllEquipmentOptions(p) {
     let ops = {};
     let slots = [
@@ -43,8 +46,33 @@ function getEquipmentOptions(p, slot) {
     let ops = {};
     let equippable = p.getComponent("equippable");
     let item = equippable?.getEquipmentSlot(slot);
+    let prevTagsRaw = p.getDynamicProperty(slot + "_tags");
+    let prevTags = undefined;
+    if (prevTagsRaw !== undefined) {
+        try {
+            prevTags = JSON.parse(prevTagsRaw);
+        }
+        catch {
+            prevTags = undefined;
+        }
+    }
+    let itemChanged = false;
+    let block_name = undefined;
     if (detectItemChanged(p, slot)) {
         kill_all_indicators(p);
+        if (prevTags != undefined) {
+            prevTags.forEach((tag) => {
+                if (tag.startsWith("findblock:")) {
+                    let na = tag.replace("findblock:", "").split(":");
+                    let color = na.shift();
+                    block_name = tag.replace("findblock:", "").replace(color + ":", "");
+                    p.setDynamicProperty(block_name + "_color", undefined);
+                    p.setDynamicProperty(block_name + "_indicator", undefined);
+                }
+            });
+        }
+        itemChanged = true;
+        p.setDynamicProperty(slot + "_tags", JSON.stringify(item.getTags()));
     }
     if (item.getItem() != undefined &&
         item.getTags().includes("the_ore_finder_project:goggles")) {
@@ -136,8 +164,22 @@ function getEquipmentOptions(p, slot) {
             },
         };
     }
+    if (itemChanged) {
+    }
     return ops;
 }
+world.afterEvents.playerLeave.subscribe((event) => {
+    const p = world.getAllPlayers()[0];
+    const entities = p.dimension.getEntities({
+        location: p.location,
+        minDistance: 30
+    });
+    for (const entity of entities) {
+        if (entity.hasTag("torp_entity")) {
+            entity.kill;
+        }
+    }
+});
 function find_blocks(player, block_names, double_distance = false) {
     if (block_names !== undefined) {
         block_names.forEach((full_name) => {
@@ -189,7 +231,7 @@ function find_blocks(player, block_names, double_distance = false) {
                 `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
             ];
             tag_range_array.forEach((tag_range) => {
-                player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=p${player.id}, tag=${full_name}, ${tag_range}] add visible`);
+                player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
             });
         });
     }
@@ -367,9 +409,19 @@ system.beforeEvents.startup.subscribe((initEvent) => {
             let pos = arg.block.location;
             let tags = arg.block.getTags();
             let the_name = arg.block.type.id;
-            let p = getClosestPlayer(pos);
-            let the_color = p.getDynamicProperty(the_name + "_color");
-            let the_indicator = p.getDynamicProperty(the_name + "_indicator");
+            let players = world.getPlayers().filter(p => p.getDynamicProperty(the_name + "_color") !== undefined);
+            const playersWithDistance = players.map(player => ({
+                player: player,
+                distance: calculateDistance(player.location, pos)
+            }));
+            playersWithDistance.sort((a, b) => a.distance - b.distance);
+            players = playersWithDistance.map(item => item.player);
+            if (players[0] == undefined) {
+                return false;
+            }
+            let p = players[0];
+            const the_color = p.getDynamicProperty(the_name + "_color");
+            const the_indicator = p.getDynamicProperty(the_name + "_indicator");
             the_name = the_name.substring(the_name.indexOf(":") + 1);
             the_name = the_name.replace("minecraft:", "");
             the_name = the_name.replace("lit_", "");
@@ -379,14 +431,22 @@ system.beforeEvents.startup.subscribe((initEvent) => {
             the_name = the_name.replace("raw_", "");
             the_name = the_name.replace("_block", "");
             the_name = the_name.replace("_ore", "");
+            let entTypeId = "the_ore_finder_project:" + the_indicator + "_indicator_entity";
             let entlist = arg.dimension.getEntitiesAtBlockLocation(pos);
-            if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
+            let ent = entlist.find((e) => e.hasTag("torp_entity"));
+            if (ent !== undefined) {
+                if (ent.typeId != entTypeId) {
+                    ent.kill();
+                    ent = undefined;
+                }
+            }
+            if (ent === undefined) {
                 pos.x += 0.5;
                 pos.y += 0.5;
                 pos.z += 0.5;
                 const dist = distanceFromPlayer(p, pos);
                 if (dist > MIN_DISTANCE) {
-                    const ore = arg.dimension.spawnEntity("the_ore_finder_project:" + the_indicator + "_indicator_entity", pos);
+                    const ore = arg.dimension.spawnEntity(entTypeId, pos);
                     if (the_indicator == 'ore') {
                         ore.triggerEvent("the_ore_finder_project:" + block_name);
                     }
@@ -394,7 +454,6 @@ system.beforeEvents.startup.subscribe((initEvent) => {
                         ore.triggerEvent("the_ore_finder_project:" + the_color);
                     }
                     ore.addTag("torp_entity");
-                    ore.addTag(`p${p.id}`);
                     ore.addTag("visible");
                     ore.addTag(arg.block.type.id);
                 }
@@ -442,10 +501,10 @@ function detectItemChanged(p, slot) {
     return false;
 }
 function kill_all_indicators(p) {
-    p.runCommand(`execute as @e[tag=torp_entity, tag=p${p.id}] at @s run kill @s`);
+    p.runCommand(`execute as @e[tag=torp_entity] at @s run kill @s`);
 }
 function killEntitiesNearPlayer(player) {
-    const entities = player.dimension.getEntities({ tags: ["torp_entity", `p${player.id}`] });
+    const entities = player.dimension.getEntities({ tags: ["torp_entity"] });
     entities.forEach((ent) => {
         const dist = distanceFromPlayer(player, ent.location);
         if (dist <= MIN_DISTANCE) {
@@ -459,4 +518,21 @@ function distanceFromPlayer(p, loc) {
     const dz = loc.z - p.location.z;
     const dist = Math.ceil(Math.sqrt(dx * dx + dy * dy + dz * dz));
     return dist;
+}
+function calculateDistance(pos1, pos2) {
+    const dx = pos1.x - pos2.x;
+    const dy = pos1.y - pos2.y;
+    const dz = pos1.z - pos2.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+function showPlayerDynamicProperties(player) {
+    const names = player.getDynamicPropertyIds();
+    if (names.length === 0) {
+        world.sendMessage("You have no dynamic properties set.");
+        return;
+    }
+    names.forEach(name => {
+        const value = player.getDynamicProperty(name);
+        player.sendMessage(`${name}: ${JSON.stringify(value)}`);
+    });
 }

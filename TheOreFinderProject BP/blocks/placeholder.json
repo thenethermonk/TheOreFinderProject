@@ -27,7 +27,11 @@
           "redstone",
           "deepslate_redstone"
         ],
-        "the_ore_finder_project:suffix": ["", "ore", "block"]
+        "the_ore_finder_project:suffix": [
+          "",
+          "ore",
+          "block"
+        ]
       }
     },
     "components": {

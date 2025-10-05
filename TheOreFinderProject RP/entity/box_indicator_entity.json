@@ -8,7 +8,6 @@
       },
       "textures": {
         "default": "textures/glow/blank",
-
         "red": "textures/glow/red",
         "orange": "textures/glow/orange",
         "yellow": "textures/glow/yellow",
@@ -21,7 +20,6 @@
         "violet": "textures/glow/violet",
         "magenta": "textures/glow/magenta",
         "rose": "textures/glow/rose",
-
         "dark_red": "textures/glow/dark/red",
         "dark_orange": "textures/glow/dark/orange",
         "dark_yellow": "textures/glow/dark/yellow",
@@ -34,7 +32,6 @@
         "dark_violet": "textures/glow/dark/violet",
         "dark_magenta": "textures/glow/dark/magenta",
         "dark_rose": "textures/glow/dark/rose",
-
         "light_red": "textures/glow/light/red",
         "light_orange": "textures/glow/light/orange",
         "light_yellow": "textures/glow/light/yellow",
@@ -47,7 +44,6 @@
         "light_violet": "textures/glow/light/violet",
         "light_magenta": "textures/glow/light/magenta",
         "light_rose": "textures/glow/light/rose",
-
         "grey_64": "textures/glow/grey_64",
         "grey_128": "textures/glow/grey_128",
         "grey_192": "textures/glow/grey_192",
@@ -60,9 +56,13 @@
         "box_spin": "animation.box.spin"
       },
       "scripts": {
-        "animate": ["box_spin"]
+        "animate": [
+          "box_spin"
+        ]
       },
-      "render_controllers": ["controller.render.vanilla_indicator"]
+      "render_controllers": [
+        "controller.render.vanilla_indicator"
+      ]
     }
   }
 }

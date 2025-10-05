@@ -1,13 +1,13 @@
 {
   "format_version": 2,
   "header": {
-    "description": "Goggles that highlight nearby ores.\\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv1.1.1",
+    "description": "Goggles that highlight nearby ores.\\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv1.1.2",
     "name": "§2The Ore Finder Project - DBP",
     "uuid": "84eb68c8-1ff7-42ba-b591-e7b856b7eb4f",
     "version": [
       1,
       1,
-      1
+      2
     ],
     "min_engine_version": [
       1,
@@ -21,12 +21,12 @@
       "version": [
         1,
         1,
-        1
+        2
       ]
     },
     {
       "module_name": "@minecraft/server",
-      "version": "2.1.0"
+      "version": "2.2.0"
     },
     {
       "module_name": "@minecraft/server-ui",
