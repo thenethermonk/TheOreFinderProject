@@ -56,7 +56,7 @@ Move-Item -Path "TheOreFinderProject_$Version.zip" -Destination "TheOreFinderPro
 # update the BP manifest back to dev settings
 $data = Get-Content "TheOreFinderProject BP\manifest.json" | ConvertFrom-Json
 $data.header.name = "§2The Ore Finder Project - DBP"
-$data.header.description = "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
+$data.header.description = "Goggles that highlight nearby ores.`n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
 $data.header.uuid = $BPD_UUID
 $data.header.version = $intArray
 $data.dependencies[0].uuid = $RPD_UUID
@@ -67,7 +67,7 @@ Set-Content -Path "TheOreFinderProject BP\manifest.json" -Value $updatedJsonCont
 # update the RP manifest back to dev settings
 $data = Get-Content "TheOreFinderProject RP\manifest.json" | ConvertFrom-Json
 $data.header.name = "§2The Ore Finder Project - DRP"
-$data.header.description = "Goggles that highlight nearby ores.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
+$data.header.description = "Goggles that highlight nearby ores.`n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv$ver";
 $data.header.uuid = $RPD_UUID
 $data.header.version = $intArray
 $data.dependencies[0].uuid = $BPD_UUID
