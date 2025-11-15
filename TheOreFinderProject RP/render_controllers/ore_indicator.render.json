@@ -6,7 +6,7 @@
         "textures": {
           "Array.skins": [
             "Texture.default",
-            
+
             "Texture.coal_ore",
             "Texture.deepslate_coal_ore",
 
@@ -28,7 +28,7 @@
 
             "Texture.emerald_ore",
             "Texture.deepslate_emerald_ore",
-            
+
             "Texture.redstone_ore",
             "Texture.deepslate_redstone_ore",
 

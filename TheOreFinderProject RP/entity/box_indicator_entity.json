@@ -56,13 +56,9 @@
         "box_spin": "animation.box.spin"
       },
       "scripts": {
-        "animate": [
-          "box_spin"
-        ]
+        "animate": ["box_spin"]
       },
-      "render_controllers": [
-        "controller.render.vanilla_indicator"
-      ]
+      "render_controllers": ["controller.render.vanilla_indicator"]
     }
   }
 }

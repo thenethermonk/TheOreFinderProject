@@ -90,22 +90,30 @@
         "add": { "component_groups": ["the_ore_finder_project:coal_ore"] }
       },
       "the_ore_finder_project:deepslate_coal_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_coal_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_coal_ore"]
+        }
       },
       "the_ore_finder_project:copper_ore": {
         "add": { "component_groups": ["the_ore_finder_project:copper_ore"] }
       },
       "the_ore_finder_project:deepslate_copper_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_copper_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_copper_ore"]
+        }
       },
       "the_ore_finder_project:raw_copper_block": {
-        "add": { "component_groups": ["the_ore_finder_project:raw_copper_block"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:raw_copper_block"]
+        }
       },
       "the_ore_finder_project:iron_ore": {
         "add": { "component_groups": ["the_ore_finder_project:iron_ore"] }
       },
       "the_ore_finder_project:deepslate_iron_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_iron_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_iron_ore"]
+        }
       },
       "the_ore_finder_project:raw_iron_block": {
         "add": { "component_groups": ["the_ore_finder_project:raw_iron_block"] }
@@ -114,40 +122,54 @@
         "add": { "component_groups": ["the_ore_finder_project:gold_ore"] }
       },
       "the_ore_finder_project:deepslate_gold_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_gold_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_gold_ore"]
+        }
       },
       "the_ore_finder_project:raw_gold_block": {
         "add": { "component_groups": ["the_ore_finder_project:raw_gold_block"] }
       },
       "the_ore_finder_project:nether_gold_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:nether_gold_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:nether_gold_ore"]
+        }
       },
       "the_ore_finder_project:diamond_ore": {
         "add": { "component_groups": ["the_ore_finder_project:diamond_ore"] }
       },
       "the_ore_finder_project:deepslate_diamond_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_diamond_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_diamond_ore"]
+        }
       },
       "the_ore_finder_project:emerald_ore": {
         "add": { "component_groups": ["the_ore_finder_project:emerald_ore"] }
       },
       "the_ore_finder_project:deepslate_emerald_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_emerald_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_emerald_ore"]
+        }
       },
       "the_ore_finder_project:redstone_ore": {
         "add": { "component_groups": ["the_ore_finder_project:redstone_ore"] }
       },
       "the_ore_finder_project:deepslate_redstone_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_redstone_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_redstone_ore"]
+        }
       },
       "the_ore_finder_project:lapis_ore": {
         "add": { "component_groups": ["the_ore_finder_project:lapis_ore"] }
       },
       "the_ore_finder_project:deepslate_lapis_ore": {
-        "add": { "component_groups": ["the_ore_finder_project:deepslate_lapis_ore"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:deepslate_lapis_ore"]
+        }
       },
       "the_ore_finder_project:budding_amethyst": {
-        "add": { "component_groups": ["the_ore_finder_project:budding_amethyst"] }
+        "add": {
+          "component_groups": ["the_ore_finder_project:budding_amethyst"]
+        }
       },
       "the_ore_finder_project:quartz_ore": {
         "add": { "component_groups": ["the_ore_finder_project:quartz_ore"] }

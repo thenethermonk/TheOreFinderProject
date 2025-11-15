@@ -1,0 +1,61 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.vanilla_indicator": {
+      "arrays": {
+        "textures": {
+          "Array.textures": [
+            "texture.default",
+            "texture.red",
+            "texture.orange",
+            "texture.yellow",
+            "texture.lime",
+            "texture.green",
+            "texture.aqua",
+            "texture.cyan",
+            "texture.azure",
+            "texture.blue",
+            "texture.violet",
+            "texture.magenta",
+            "texture.rose",
+            "texture.dark_red",
+            "texture.dark_orange",
+            "texture.dark_yellow",
+            "texture.dark_lime",
+            "texture.dark_green",
+            "texture.dark_aqua",
+            "texture.dark_cyan",
+            "texture.dark_azure",
+            "texture.dark_blue",
+            "texture.dark_violet",
+            "texture.dark_magenta",
+            "texture.dark_rose",
+            "texture.light_red",
+            "texture.light_orange",
+            "texture.light_yellow",
+            "texture.light_lime",
+            "texture.light_green",
+            "texture.light_aqua",
+            "texture.light_cyan",
+            "texture.light_azure",
+            "texture.light_blue",
+            "texture.light_violet",
+            "texture.light_magenta",
+            "texture.light_rose",
+            "texture.grey_64",
+            "texture.grey_128",
+            "texture.grey_192",
+            "texture.white"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "material.default"
+        }
+      ],
+      "textures": ["Array.textures[q.variant]"]
+    }
+  }
+}
