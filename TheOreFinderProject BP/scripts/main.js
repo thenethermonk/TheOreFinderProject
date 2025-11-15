@@ -1,6 +1,6 @@
 import { world, system, EquipmentSlot, } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
-const MIN_DISTANCE = 2;
+const MIN_DISTANCE = 0;
 system.runInterval(() => {
     const players = world.getPlayers();
     if (players.length == 0)

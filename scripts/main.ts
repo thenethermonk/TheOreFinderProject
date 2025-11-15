@@ -9,7 +9,8 @@ import {
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
-const MIN_DISTANCE = 2
+// minimum distance from player to indicator entities before they get removed
+const MIN_DISTANCE = 0
 
 /**
  * this runInterval is set to run 4 times a second
