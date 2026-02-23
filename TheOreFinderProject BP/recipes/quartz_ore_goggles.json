@@ -6,15 +6,9 @@
     },
     "tags": ["crafting_table"],
     "ingredients": [
-      {
-        "item": "minecraft:quartz"
-      },
-      {
-        "item": "minecraft:leather"
-      },
-      {
-        "item": "minecraft:spider_eye"
-      }
+      { "item": "minecraft:quartz" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:spider_eye" }
     ],
     "result": {
       "item": "the_ore_finder_project:quartz_ore_goggles",

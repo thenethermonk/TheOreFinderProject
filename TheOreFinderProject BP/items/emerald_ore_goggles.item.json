@@ -20,7 +20,8 @@
         "tags": [
           "the_ore_finder_project:goggles",
           "findblock:green:minecraft:emerald_ore",
-          "findblock:green:minecraft:deepslate_emerald_ore"
+          "findblock:green:minecraft:deepslate_emerald_ore",
+          "findblock:green:panascais_end:end_stone_emerald_ore"
         ]
       }
     }

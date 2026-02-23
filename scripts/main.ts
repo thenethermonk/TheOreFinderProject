@@ -6,6 +6,7 @@ import {
   ContainerSlot,
   EntityEquippableComponent,
   Vector3,
+  BlockVolume,
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
@@ -24,10 +25,10 @@ system.runInterval(() => {
 
   players.forEach((player) => {
     player.runCommand(
-      'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]'
+      'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]',
     )
     player.runCommand(
-      "execute as @e[tag=night_vision] at @s run tag @s remove night_vision"
+      "execute as @e[tag=night_vision] at @s run tag @s remove night_vision",
     )
 
     let ops = getAllEquipmentOptions(player)
@@ -42,13 +43,13 @@ system.runInterval(() => {
         ) {
           if (options.effect == 1) {
             player.runCommand(
-              'execute as @a at @s run fill ~ ~ ~ ~ ~1 ~ light_block ["block_light_level"=9] keep'
+              'execute as @a at @s run fill ~ ~ ~ ~ ~1 ~ light_block ["block_light_level"=9] keep',
             )
           }
           if (options.effect == 2) {
             player.addTag("night_vision")
             player.runCommand(
-              "execute as @a[tag=night_vision] run effect @s night_vision 30 0 true"
+              "execute as @a[tag=night_vision] run effect @s night_vision 30 0 true",
             )
           }
         }
@@ -60,13 +61,12 @@ system.runInterval(() => {
 
   // if an entity doesn't have the visible tag, kill it
   players[0].runCommand(
-    `execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s`
+    `execute as @e[tag=torp_entity] at @s unless entity @s[tag=visible] run kill @s`,
   )
   // remove the visible tag
   players[0].runCommand(
-    `execute as @e[tag=torp_entity, tag=visible] at @s run tag @s remove visible`
+    `execute as @e[tag=torp_entity, tag=visible] at @s run tag @s remove visible`,
   )
-
 }, 4)
 
 function getAllEquipmentOptions(p: Player) {
@@ -141,7 +141,10 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
     let find_blocks: string[] = []
     let options_string = "{}"
     let options = {
-      dd: false, effect: 1, indicator: 0, ores: {
+      dd: false,
+      effect: 1,
+      indicator: 0,
+      ores: {
         coal: true,
         copper: true,
         gold: true,
@@ -152,8 +155,8 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         lapis: true,
         redstone: true,
         quartz: true,
-        ancient_debris: true
-      }
+        ancient_debris: true,
+      },
     }
 
     if (item.getDynamicProperty("options") != undefined) {
@@ -162,14 +165,22 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
     }
 
     // we need to validate options, or it could break things
-    if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+    if (
+      typeof options.indicator !== "number" ||
+      options.indicator < 0 ||
+      options.indicator > 3
+    ) {
       options.indicator = 0
     }
-    if (typeof options.dd !== 'boolean') {
+    if (typeof options.dd !== "boolean") {
       if (options.dd == 1) options.dd = true
       else options.dd = false
     }
-    if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+    if (
+      typeof options.effect !== "number" ||
+      options.effect < 0 ||
+      options.effect > 2
+    ) {
       options.effect = 1
     }
 
@@ -205,29 +216,18 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         }
 
         // we only add to find_blocks if the ore is set to be found
-        let the_name = block_name
-
-        // pull out the ore name
-        // start with the namespace
-        the_name = the_name.substring(the_name.indexOf(":") + 1)
-        // now the possible prefixes
-        the_name = the_name.replace("minecraft:", "")
-        the_name = the_name.replace("lit_", "")
-        the_name = the_name.replace("deepslate_", "")
-        the_name = the_name.replace("nether_", "")
-        the_name = the_name.replace("raw_", "")
-        // now the possible suffixes
-        the_name = the_name.replace("_block", "")
-        the_name = the_name.replace("_ore", "")
-
-        if (name == "the_ore_finder_project:overworld_goggles" || name == "the_ore_finder_project:universal_goggles") {
+        if (
+          name == "the_ore_finder_project:overworld_goggles" ||
+          name == "the_ore_finder_project:universal_goggles"
+        ) {
           for (const [key, value] of Object.entries(options.ores)) {
-            if (key == the_name && value === true) {
-              find_blocks.push(block_name);
+            if (block_name.includes(key) && value === true) {
+              //if (key == the_name && value === true) {
+              find_blocks.push(block_name)
             }
           }
         } else {
-          find_blocks.push(block_name);
+          find_blocks.push(block_name)
         }
       }
     })
@@ -254,7 +254,7 @@ world.afterEvents.playerLeave.subscribe((event) => {
   const p = world.getAllPlayers()[0]
   const entities = p.dimension.getEntities({
     location: p.location,
-    minDistance: 30
+    minDistance: 30,
   })
   for (const entity of entities) {
     if (entity.hasTag("torp_entity")) {
@@ -273,83 +273,42 @@ world.afterEvents.playerLeave.subscribe((event) => {
 function find_blocks(
   player: Player,
   block_names: [string],
-  double_distance = false
+  double_distance = false,
 ) {
   if (block_names !== undefined) {
     // cycle through the block names that need to be replaced
     block_names.forEach((full_name: string) => {
-      // we need to pull out the prefix, name and suffix
-      let n = full_name.split("_")
-      let suffix = ""
-      if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-        suffix = String(n.pop())
-      }
-      let prefix = ""
-      if (n.length > 1) {
-        prefix = String(n.shift())
-      }
-      let name = n.join("_")
-
-      // if we have a : left and prefix is not set, split it again
-      if (prefix == "" && name.includes(":")) {
-        ;[prefix, name] = name.split(":")
-        prefix += ":"
-      }
-
-
-      // set distance
       let d = 15
       if (double_distance) {
         d = 30
       }
-
-      // we need to make sure we don't go below -64
-      let nY = -1 * d
-      if (player.location.y < -64 + d) {
-        nY = -64 - player.location.y
+      let bv = new BlockVolume(
+        {
+          x: player.location.x - d,
+          y: player.location.y - d,
+          z: player.location.z - d,
+        },
+        {
+          x: player.location.x + d,
+          y: player.location.y + d,
+          z: player.location.z + d,
+        },
+      )
+      let list = player.dimension.getBlocks(
+        bv,
+        { includeTypes: [full_name] },
+        true,
+      )
+      let locations = list.getBlockLocationIterator()
+      let loc = locations.next()
+      while (!loc.done) {
+        buildIndicatorEntity(loc.value)
+        loc = locations.next()
       }
-
-      // build the fill locations
-      let fill_array = [
-        `~ ~ ~ ~${d} ~${d} ~${d}`,
-        `~ ~ ~ ~${d} ~${d} ~-${d}`,
-        `~ ~ ~ ~${d} ~${nY} ~${d}`,
-        `~ ~ ~ ~${d} ~${nY} ~-${d}`,
-        `~ ~ ~ ~-${d} ~${d} ~${d}`,
-        `~ ~ ~ ~-${d} ~${d} ~-${d}`,
-        `~ ~ ~ ~-${d} ~${nY} ~${d}`,
-        `~ ~ ~ ~-${d} ~${nY} ~-${d}`,
-      ]
-
-      fill_array.forEach((locs) => {
-        // replace the ore
-        player.runCommand(
-          `execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`
-        )
-        // put it back
-        player.runCommand(
-          `execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`
-        )
-      })
-
-      // tag the entities so they don't get rebuilt
-      let tag_range_array = [
-        `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=${d}`,
-        `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=-${d}`,
-        `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=${d}`,
-        `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
-        `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=${d}`,
-        `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=-${d}`,
-        `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=${d}`,
-        `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
-      ]
-
-      tag_range_array.forEach((tag_range) => {
-        player.runCommand(
-          `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`
-        )
-      })
-
+      let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`
+      player.runCommand(
+        `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`,
+      )
     })
   }
 }
@@ -364,7 +323,7 @@ world.beforeEvents.itemUse.subscribe((e) => {
     // we can't access dynamic content from an itemStack,
     // so we grab the item in the mainhand slot
     let equippable = source.getComponent(
-      "equippable"
+      "equippable",
     ) as EntityEquippableComponent
     const item = equippable?.getEquipmentSlot(EquipmentSlot.Mainhand)
 
@@ -395,7 +354,10 @@ world.beforeEvents.itemUse.subscribe((e) => {
 function showGoggleOptions(player: Player, item: ContainerSlot) {
   // prepare the defaults
   let options = {
-    dd: false, effect: 1, indicator: 0, ores: {
+    dd: false,
+    effect: 1,
+    indicator: 0,
+    ores: {
       coal: true,
       copper: true,
       gold: true,
@@ -406,8 +368,8 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
       lapis: true,
       redstone: true,
       quartz: true,
-      ancient_debris: true
-    }
+      ancient_debris: true,
+    },
   }
   let effects = ["None", "Dynamic Torch"]
   let indicators = ["Box", "Orb", "Outline", "Ore"]
@@ -427,14 +389,22 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   }
 
   // we need to validate options, or it could break things
-  if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+  if (
+    typeof options.indicator !== "number" ||
+    options.indicator < 0 ||
+    options.indicator > 3
+  ) {
     options.indicator = 0
   }
-  if (typeof options.dd !== 'boolean') {
+  if (typeof options.dd !== "boolean") {
     if (options.dd == 1) options.dd = true
     else options.dd = false
   }
-  if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+  if (
+    typeof options.effect !== "number" ||
+    options.effect < 0 ||
+    options.effect > 2
+  ) {
     options.effect = 1
   }
 
@@ -446,15 +416,24 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
   })
 
   if (player.graphicsMode != "Deferred") {
-    modalForm.label("                §4Glow disabled\n§6To enable glow, §fSave & Quit§6. Then\nset §fSettings§6 > §fVideo§6 >§f Graphics Mode§6 to §fVibrant Visuals§6")
+    modalForm.label(
+      "                §4Glow disabled\n§6To enable glow, §fSave & Quit§6. Then\nset §fSettings§6 > §fVideo§6 >§f Graphics Mode§6 to §fVibrant Visuals§6",
+    )
     modalForm.divider()
   }
-  modalForm.dropdown("\nEffect (When worn on head)", effects, { defaultValueIndex: options.effect })
-  modalForm.dropdown("Indicator Type", indicators, { defaultValueIndex: options.indicator })
+  modalForm.dropdown("\nEffect (When worn on head)", effects, {
+    defaultValueIndex: options.effect,
+  })
+  modalForm.dropdown("Indicator Type", indicators, {
+    defaultValueIndex: options.indicator,
+  })
 
   modalForm.toggle("Double Distance", { defaultValue: options.dd })
 
-  if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+  if (
+    item.typeId == "the_ore_finder_project:overworld_goggles" ||
+    item.typeId == "the_ore_finder_project:universal_goggles"
+  ) {
     modalForm.divider()
     modalForm.label("Find Ores§6")
     modalForm.toggle("§8Coal Ore§6", { defaultValue: options.ores.coal })
@@ -463,13 +442,17 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
     modalForm.toggle("§iIron Ore§6", { defaultValue: options.ores.iron })
     modalForm.toggle("§sDiamond Ore§6", { defaultValue: options.ores.diamond })
     modalForm.toggle("§qEmerald Ore§6", { defaultValue: options.ores.emerald })
-    modalForm.toggle("§uBudding Amethyst§6", { defaultValue: options.ores.budding_amethyst })
+    modalForm.toggle("§uBudding Amethyst§6", {
+      defaultValue: options.ores.budding_amethyst,
+    })
     modalForm.toggle("§tLapis Lazuli§6", { defaultValue: options.ores.lapis })
     modalForm.toggle("§mRedstone§6", { defaultValue: options.ores.redstone })
   }
   if (item.typeId == "the_ore_finder_project:universal_goggles") {
     modalForm.toggle("§hQuartz§6", { defaultValue: options.ores.quartz })
-    modalForm.toggle("§jAncient Debris§6", { defaultValue: options.ores.ancient_debris })
+    modalForm.toggle("§jAncient Debris§6", {
+      defaultValue: options.ores.ancient_debris,
+    })
   }
 
   // because form labels and dividers are counted as formValues, we need to compensate for them
@@ -489,10 +472,13 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
           dd: formData.formValues[start + 2],
           effect: formData.formValues[start],
           indicator: formData.formValues[start + 1],
-          ores: {}
+          ores: {},
         }
         // NOTE, right now dividers and lables count as value so we skip 2 fields
-        if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+        if (
+          item.typeId == "the_ore_finder_project:overworld_goggles" ||
+          item.typeId == "the_ore_finder_project:universal_goggles"
+        ) {
           saveOptions = {
             ...saveOptions,
             ores: {
@@ -505,7 +491,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
               budding_amethyst: formData.formValues[start + 11],
               lapis: formData.formValues[start + 12],
               redstone: formData.formValues[start + 13],
-            }
+            },
           }
         }
         if (item.typeId == "the_ore_finder_project:universal_goggles") {
@@ -515,7 +501,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
               ...saveOptions.ores,
               quartz: formData.formValues[start + 14],
               ancient_debris: formData.formValues[start + 15],
-            }
+            },
           }
         }
 
@@ -573,7 +559,6 @@ system.beforeEvents.startup.subscribe((initEvent) => {
     "the_ore_finder_project:ore_finder_component",
     {
       onPlace(arg) {
-
         // get the location of the current block
         let pos = arg.block.location
 
@@ -589,7 +574,11 @@ system.beforeEvents.startup.subscribe((initEvent) => {
         // so we're going to get players in the current dimension that have the dynamic property that picks the color and use the first one
         // this will only become an issue if players are ever allowed to change their ore colors
 
-        let players: Player[] = world.getPlayers().filter(p => p.getDynamicProperty(the_name + "_color") !== undefined)
+        let players: Player[] = world
+          .getPlayers()
+          .filter(
+            (p) => p.getDynamicProperty(the_name + "_color") !== undefined,
+          )
         /*        let players: Player[] = world.getPlayers()
                 players.forEach((p) => {
                   let x = p.getDynamicProperty(the_name + "_indicator")
@@ -599,14 +588,14 @@ system.beforeEvents.startup.subscribe((initEvent) => {
                 })*/
 
         // we need to sort by distance from block location
-        const playersWithDistance = players.map(player => ({
+        const playersWithDistance = players.map((player) => ({
           player: player,
-          distance: calculateDistance(player.location, pos)
-        }));
+          distance: calculateDistance(player.location, pos),
+        }))
 
-        playersWithDistance.sort((a, b) => a.distance - b.distance);
+        playersWithDistance.sort((a, b) => a.distance - b.distance)
 
-        players = playersWithDistance.map(item => item.player)
+        players = playersWithDistance.map((item) => item.player)
 
         if (players[0] == undefined) {
           return false
@@ -637,7 +626,8 @@ system.beforeEvents.startup.subscribe((initEvent) => {
         the_name = the_name.replace("_block", "")
         the_name = the_name.replace("_ore", "")
 
-        let entTypeId = "the_ore_finder_project:" + the_indicator + "_indicator_entity"
+        let entTypeId =
+          "the_ore_finder_project:" + the_indicator + "_indicator_entity"
 
         // Make sure the indicator entity doesn't already exist at this location, and Summon the indicator entity
         let entlist = arg.dimension.getEntitiesAtBlockLocation(pos)
@@ -653,8 +643,6 @@ system.beforeEvents.startup.subscribe((initEvent) => {
           }
         }
 
-
-
         if (ent === undefined) {
           pos.x += 0.5
           pos.y += 0.5
@@ -667,7 +655,7 @@ system.beforeEvents.startup.subscribe((initEvent) => {
             // spawn the entity
             const ore = arg.dimension.spawnEntity(entTypeId, pos)
             // trigger event to set the color/texture
-            if (the_indicator == 'ore') {
+            if (the_indicator == "ore") {
               ore.triggerEvent("the_ore_finder_project:" + block_name)
             } else {
               ore.triggerEvent("the_ore_finder_project:" + the_color)
@@ -680,9 +668,55 @@ system.beforeEvents.startup.subscribe((initEvent) => {
           }
         }
       },
-    }
+    },
   )
 })
+
+function buildIndicatorEntity(pos: Vector3) {
+  let p = getClosestPlayer(pos)
+  let the_block = p.dimension.getBlock(pos)
+  if (the_block == undefined) {
+    return
+  }
+  let the_name = the_block.type.id
+  let the_color = p.getDynamicProperty(the_name + "_color")
+  let the_indicator = p.getDynamicProperty(the_name + "_indicator")
+  let entTypeId =
+    "the_ore_finder_project:" + the_indicator + "_indicator_entity"
+  let entlist = p.dimension.getEntitiesAtBlockLocation(pos)
+  if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
+    pos.x += 0.5
+    pos.y += 0.5
+    pos.z += 0.5
+    // don't spawn if player is too close
+    const dist = distanceFromPlayer(p, pos)
+
+    if (dist > MIN_DISTANCE) {
+      // spawn the entity
+      let ore = p.dimension.spawnEntity(entTypeId, pos)
+      // trigger event to set the color/texture
+      if (the_indicator == "ore") {
+        try {
+          ore.triggerEvent("the_ore_finder_project:" + the_block.type.id)
+        } catch {
+          // if ore event doesn't exist, rebuild the entity with box indicator
+          ore = p.dimension.spawnEntity(
+            "the_ore_finder_project:box_indicator_entity",
+            pos,
+          )
+          ore.triggerEvent("the_ore_finder_project:" + the_color)
+        }
+      } else {
+        ore.triggerEvent("the_ore_finder_project:" + the_color)
+      }
+
+      ore.addTag("torp_entity")
+      //ore.addTag(`p${p.id}`)
+      ore.addTag("visible")
+      ore.addTag(the_block.type.id)
+    }
+  }
+}
 
 function getClosestPlayer(loc: Vector3) {
   let dis = 0
@@ -751,12 +785,11 @@ function distanceFromPlayer(p: Player, loc: Vector3) {
 }
 
 function calculateDistance(pos1: Vector3, pos2: Vector3): number {
-  const dx = pos1.x - pos2.x;
-  const dy = pos1.y - pos2.y;
-  const dz = pos1.z - pos2.z;
-  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  const dx = pos1.x - pos2.x
+  const dy = pos1.y - pos2.y
+  const dz = pos1.z - pos2.z
+  return Math.sqrt(dx * dx + dy * dy + dz * dz)
 }
-
 
 // most likely going away
 
@@ -767,7 +800,7 @@ function showPlayerDynamicProperties(player: Player) {
     world.sendMessage("You have no dynamic properties set.")
     return
   }
-  names.forEach(name => {
+  names.forEach((name) => {
     const value = player.getDynamicProperty(name)
     player.sendMessage(`${name}: ${JSON.stringify(value)}`)
   })

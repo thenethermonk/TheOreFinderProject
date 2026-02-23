@@ -19,7 +19,8 @@
       "minecraft:tags": {
         "tags": [
           "the_ore_finder_project:goggles",
-          "findblock:grey_192:minecraft:quartz_ore"
+          "findblock:grey_192:minecraft:quartz_ore",
+          "findblock:grey_192:panascais_end:end_stone_quartz_ore"
         ]
       }
     }

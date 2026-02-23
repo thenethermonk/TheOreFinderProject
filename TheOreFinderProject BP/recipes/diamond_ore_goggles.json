@@ -1,20 +1,14 @@
 {
-  "format_version": "1.12",
+  "format_version": "1.16",
   "minecraft:recipe_shapeless": {
     "description": {
-      "identifier": "recipes_941b50b9"
+      "identifier": "the_ore_finder_project:diamond_ore_goggles_recipe"
     },
     "tags": ["crafting_table"],
     "ingredients": [
-      {
-        "item": "minecraft:diamond"
-      },
-      {
-        "item": "minecraft:leather"
-      },
-      {
-        "item": "minecraft:spider_eye"
-      }
+      { "item": "minecraft:diamond" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:spider_eye" }
     ],
     "result": {
       "item": "the_ore_finder_project:diamond_ore_goggles",

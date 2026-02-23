@@ -1,4 +1,4 @@
-import { world, system, EquipmentSlot, } from "@minecraft/server";
+import { world, system, EquipmentSlot, BlockVolume, } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 const MIN_DISTANCE = 0;
 system.runInterval(() => {
@@ -80,7 +80,10 @@ function getEquipmentOptions(p, slot) {
         let find_blocks = [];
         let options_string = "{}";
         let options = {
-            dd: false, effect: 1, indicator: 0, ores: {
+            dd: false,
+            effect: 1,
+            indicator: 0,
+            ores: {
                 coal: true,
                 copper: true,
                 gold: true,
@@ -91,23 +94,27 @@ function getEquipmentOptions(p, slot) {
                 lapis: true,
                 redstone: true,
                 quartz: true,
-                ancient_debris: true
-            }
+                ancient_debris: true,
+            },
         };
         if (item.getDynamicProperty("options") != undefined) {
             options_string = item.getDynamicProperty("options");
             options = JSON.parse(options_string);
         }
-        if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+        if (typeof options.indicator !== "number" ||
+            options.indicator < 0 ||
+            options.indicator > 3) {
             options.indicator = 0;
         }
-        if (typeof options.dd !== 'boolean') {
+        if (typeof options.dd !== "boolean") {
             if (options.dd == 1)
                 options.dd = true;
             else
                 options.dd = false;
         }
-        if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+        if (typeof options.effect !== "number" ||
+            options.effect < 0 ||
+            options.effect > 2) {
             options.effect = 1;
         }
         item.getTags().forEach((tag) => {
@@ -134,18 +141,10 @@ function getEquipmentOptions(p, slot) {
                         break;
                     }
                 }
-                let the_name = block_name;
-                the_name = the_name.substring(the_name.indexOf(":") + 1);
-                the_name = the_name.replace("minecraft:", "");
-                the_name = the_name.replace("lit_", "");
-                the_name = the_name.replace("deepslate_", "");
-                the_name = the_name.replace("nether_", "");
-                the_name = the_name.replace("raw_", "");
-                the_name = the_name.replace("_block", "");
-                the_name = the_name.replace("_ore", "");
-                if (name == "the_ore_finder_project:overworld_goggles" || name == "the_ore_finder_project:universal_goggles") {
+                if (name == "the_ore_finder_project:overworld_goggles" ||
+                    name == "the_ore_finder_project:universal_goggles") {
                     for (const [key, value] of Object.entries(options.ores)) {
-                        if (key == the_name && value === true) {
+                        if (block_name.includes(key) && value === true) {
                             find_blocks.push(block_name);
                         }
                     }
@@ -172,7 +171,7 @@ world.afterEvents.playerLeave.subscribe((event) => {
     const p = world.getAllPlayers()[0];
     const entities = p.dimension.getEntities({
         location: p.location,
-        minDistance: 30
+        minDistance: 30,
     });
     for (const entity of entities) {
         if (entity.hasTag("torp_entity")) {
@@ -183,56 +182,28 @@ world.afterEvents.playerLeave.subscribe((event) => {
 function find_blocks(player, block_names, double_distance = false) {
     if (block_names !== undefined) {
         block_names.forEach((full_name) => {
-            let n = full_name.split("_");
-            let suffix = "";
-            if (n[n.length - 1] == "ore" || n[n.length - 1] == "block") {
-                suffix = String(n.pop());
-            }
-            let prefix = "";
-            if (n.length > 1) {
-                prefix = String(n.shift());
-            }
-            let name = n.join("_");
-            if (prefix == "" && name.includes(":")) {
-                ;
-                [prefix, name] = name.split(":");
-                prefix += ":";
-            }
             let d = 15;
             if (double_distance) {
                 d = 30;
             }
-            let nY = -1 * d;
-            if (player.location.y < -64 + d) {
-                nY = -64 - player.location.y;
+            let bv = new BlockVolume({
+                x: player.location.x - d,
+                y: player.location.y - d,
+                z: player.location.z - d,
+            }, {
+                x: player.location.x + d,
+                y: player.location.y + d,
+                z: player.location.z + d,
+            });
+            let list = player.dimension.getBlocks(bv, { includeTypes: [full_name] }, true);
+            let locations = list.getBlockLocationIterator();
+            let loc = locations.next();
+            while (!loc.done) {
+                buildIndicatorEntity(loc.value);
+                loc = locations.next();
             }
-            let fill_array = [
-                `~ ~ ~ ~${d} ~${d} ~${d}`,
-                `~ ~ ~ ~${d} ~${d} ~-${d}`,
-                `~ ~ ~ ~${d} ~${nY} ~${d}`,
-                `~ ~ ~ ~${d} ~${nY} ~-${d}`,
-                `~ ~ ~ ~-${d} ~${d} ~${d}`,
-                `~ ~ ~ ~-${d} ~${d} ~-${d}`,
-                `~ ~ ~ ~-${d} ~${nY} ~${d}`,
-                `~ ~ ~ ~-${d} ~${nY} ~-${d}`,
-            ];
-            fill_array.forEach((locs) => {
-                player.runCommand(`execute as @s run fill ${locs} the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"] replace ${full_name}`);
-                player.runCommand(`execute as @s run fill ${locs} ${full_name} replace the_ore_finder_project:placeholder ["the_ore_finder_project:prefix"="${prefix}", "the_ore_finder_project:name"="${name}", "the_ore_finder_project:suffix"="${suffix}"]`);
-            });
-            let tag_range_array = [
-                `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=${d}`,
-                `x=~, dx=${d}, y=~, dy=${d}, z=~, dz=-${d}`,
-                `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=${d}`,
-                `x=~, dx=${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
-                `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=${d}`,
-                `x=~, dx=-${d}, y=~, dy=${d}, z=~, dz=-${d}`,
-                `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=${d}`,
-                `x=~, dx=-${d}, y=~, dy=-${d}, z=~, dz=-${d}`,
-            ];
-            tag_range_array.forEach((tag_range) => {
-                player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
-            });
+            let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`;
+            player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
         });
     }
 }
@@ -252,7 +223,10 @@ world.beforeEvents.itemUse.subscribe((e) => {
 });
 function showGoggleOptions(player, item) {
     let options = {
-        dd: false, effect: 1, indicator: 0, ores: {
+        dd: false,
+        effect: 1,
+        indicator: 0,
+        ores: {
             coal: true,
             copper: true,
             gold: true,
@@ -263,8 +237,8 @@ function showGoggleOptions(player, item) {
             lapis: true,
             redstone: true,
             quartz: true,
-            ancient_debris: true
-        }
+            ancient_debris: true,
+        },
     };
     let effects = ["None", "Dynamic Torch"];
     let indicators = ["Box", "Orb", "Outline", "Ore"];
@@ -278,16 +252,20 @@ function showGoggleOptions(player, item) {
             ...JSON.parse(item.getDynamicProperty("options")),
         };
     }
-    if (typeof options.indicator !== 'number' || options.indicator < 0 || options.indicator > 3) {
+    if (typeof options.indicator !== "number" ||
+        options.indicator < 0 ||
+        options.indicator > 3) {
         options.indicator = 0;
     }
-    if (typeof options.dd !== 'boolean') {
+    if (typeof options.dd !== "boolean") {
         if (options.dd == 1)
             options.dd = true;
         else
             options.dd = false;
     }
-    if (typeof options.effect !== 'number' || options.effect < 0 || options.effect > 2) {
+    if (typeof options.effect !== "number" ||
+        options.effect < 0 ||
+        options.effect > 2) {
         options.effect = 1;
     }
     const modalForm = new ModalFormData();
@@ -298,10 +276,15 @@ function showGoggleOptions(player, item) {
         modalForm.label("                §4Glow disabled\n§6To enable glow, §fSave & Quit§6. Then\nset §fSettings§6 > §fVideo§6 >§f Graphics Mode§6 to §fVibrant Visuals§6");
         modalForm.divider();
     }
-    modalForm.dropdown("\nEffect (When worn on head)", effects, { defaultValueIndex: options.effect });
-    modalForm.dropdown("Indicator Type", indicators, { defaultValueIndex: options.indicator });
+    modalForm.dropdown("\nEffect (When worn on head)", effects, {
+        defaultValueIndex: options.effect,
+    });
+    modalForm.dropdown("Indicator Type", indicators, {
+        defaultValueIndex: options.indicator,
+    });
     modalForm.toggle("Double Distance", { defaultValue: options.dd });
-    if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+    if (item.typeId == "the_ore_finder_project:overworld_goggles" ||
+        item.typeId == "the_ore_finder_project:universal_goggles") {
         modalForm.divider();
         modalForm.label("Find Ores§6");
         modalForm.toggle("§8Coal Ore§6", { defaultValue: options.ores.coal });
@@ -310,13 +293,17 @@ function showGoggleOptions(player, item) {
         modalForm.toggle("§iIron Ore§6", { defaultValue: options.ores.iron });
         modalForm.toggle("§sDiamond Ore§6", { defaultValue: options.ores.diamond });
         modalForm.toggle("§qEmerald Ore§6", { defaultValue: options.ores.emerald });
-        modalForm.toggle("§uBudding Amethyst§6", { defaultValue: options.ores.budding_amethyst });
+        modalForm.toggle("§uBudding Amethyst§6", {
+            defaultValue: options.ores.budding_amethyst,
+        });
         modalForm.toggle("§tLapis Lazuli§6", { defaultValue: options.ores.lapis });
         modalForm.toggle("§mRedstone§6", { defaultValue: options.ores.redstone });
     }
     if (item.typeId == "the_ore_finder_project:universal_goggles") {
         modalForm.toggle("§hQuartz§6", { defaultValue: options.ores.quartz });
-        modalForm.toggle("§jAncient Debris§6", { defaultValue: options.ores.ancient_debris });
+        modalForm.toggle("§jAncient Debris§6", {
+            defaultValue: options.ores.ancient_debris,
+        });
     }
     let start = 0;
     if (player.graphicsMode != "Deferred") {
@@ -332,9 +319,10 @@ function showGoggleOptions(player, item) {
                 dd: formData.formValues[start + 2],
                 effect: formData.formValues[start],
                 indicator: formData.formValues[start + 1],
-                ores: {}
+                ores: {},
             };
-            if (item.typeId == "the_ore_finder_project:overworld_goggles" || item.typeId == "the_ore_finder_project:universal_goggles") {
+            if (item.typeId == "the_ore_finder_project:overworld_goggles" ||
+                item.typeId == "the_ore_finder_project:universal_goggles") {
                 saveOptions = {
                     ...saveOptions,
                     ores: {
@@ -347,7 +335,7 @@ function showGoggleOptions(player, item) {
                         budding_amethyst: formData.formValues[start + 11],
                         lapis: formData.formValues[start + 12],
                         redstone: formData.formValues[start + 13],
-                    }
+                    },
                 };
             }
             if (item.typeId == "the_ore_finder_project:universal_goggles") {
@@ -357,7 +345,7 @@ function showGoggleOptions(player, item) {
                         ...saveOptions.ores,
                         quartz: formData.formValues[start + 14],
                         ancient_debris: formData.formValues[start + 15],
-                    }
+                    },
                 };
             }
             item.setDynamicProperty("options", JSON.stringify(saveOptions));
@@ -409,13 +397,15 @@ system.beforeEvents.startup.subscribe((initEvent) => {
             let pos = arg.block.location;
             let tags = arg.block.getTags();
             let the_name = arg.block.type.id;
-            let players = world.getPlayers().filter(p => p.getDynamicProperty(the_name + "_color") !== undefined);
-            const playersWithDistance = players.map(player => ({
+            let players = world
+                .getPlayers()
+                .filter((p) => p.getDynamicProperty(the_name + "_color") !== undefined);
+            const playersWithDistance = players.map((player) => ({
                 player: player,
-                distance: calculateDistance(player.location, pos)
+                distance: calculateDistance(player.location, pos),
             }));
             playersWithDistance.sort((a, b) => a.distance - b.distance);
-            players = playersWithDistance.map(item => item.player);
+            players = playersWithDistance.map((item) => item.player);
             if (players[0] == undefined) {
                 return false;
             }
@@ -447,7 +437,7 @@ system.beforeEvents.startup.subscribe((initEvent) => {
                 const dist = distanceFromPlayer(p, pos);
                 if (dist > MIN_DISTANCE) {
                     const ore = arg.dimension.spawnEntity(entTypeId, pos);
-                    if (the_indicator == 'ore') {
+                    if (the_indicator == "ore") {
                         ore.triggerEvent("the_ore_finder_project:" + block_name);
                     }
                     else {
@@ -461,6 +451,42 @@ system.beforeEvents.startup.subscribe((initEvent) => {
         },
     });
 });
+function buildIndicatorEntity(pos) {
+    let p = getClosestPlayer(pos);
+    let the_block = p.dimension.getBlock(pos);
+    if (the_block == undefined) {
+        return;
+    }
+    let the_name = the_block.type.id;
+    let the_color = p.getDynamicProperty(the_name + "_color");
+    let the_indicator = p.getDynamicProperty(the_name + "_indicator");
+    let entTypeId = "the_ore_finder_project:" + the_indicator + "_indicator_entity";
+    let entlist = p.dimension.getEntitiesAtBlockLocation(pos);
+    if (entlist.find((e) => e.hasTag("torp_entity")) == undefined) {
+        pos.x += 0.5;
+        pos.y += 0.5;
+        pos.z += 0.5;
+        const dist = distanceFromPlayer(p, pos);
+        if (dist > MIN_DISTANCE) {
+            let ore = p.dimension.spawnEntity(entTypeId, pos);
+            if (the_indicator == "ore") {
+                try {
+                    ore.triggerEvent("the_ore_finder_project:" + the_block.type.id);
+                }
+                catch {
+                    ore = p.dimension.spawnEntity("the_ore_finder_project:box_indicator_entity", pos);
+                    ore.triggerEvent("the_ore_finder_project:" + the_color);
+                }
+            }
+            else {
+                ore.triggerEvent("the_ore_finder_project:" + the_color);
+            }
+            ore.addTag("torp_entity");
+            ore.addTag("visible");
+            ore.addTag(the_block.type.id);
+        }
+    }
+}
 function getClosestPlayer(loc) {
     let dis = 0;
     let player = undefined;
@@ -531,7 +557,7 @@ function showPlayerDynamicProperties(player) {
         world.sendMessage("You have no dynamic properties set.");
         return;
     }
-    names.forEach(name => {
+    names.forEach((name) => {
         const value = player.getDynamicProperty(name);
         player.sendMessage(`${name}: ${JSON.stringify(value)}`);
     });

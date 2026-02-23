@@ -44,7 +44,16 @@
           "findblock:red:minecraft:lit_redstone_ore",
           "findblock:red:minecraft:lit_deepslate_redstone_ore",
           "findblock:dark_orange:minecraft:ancient_debris",
-          "findblock:grey_192:minecraft:quartz_ore"
+          "findblock:grey_192:minecraft:quartz_ore",
+
+          "findblock:orange:panascais_end:end_stone_copper_ore",
+          "findblock:cyan:panascais_end:end_stone_diamond_ore",
+          "findblock:green:panascais_end:end_stone_emerald_ore",
+          "findblock:yellow:panascais_end:end_stone_gold_ore",
+          "findblock:grey_192:panascais_end:end_stone_iron_ore",
+          "findblock:blue:panascais_end:end_stone_lapis_ore",
+          "findblock:red:panascais_end:end_stone_redstone_ore",
+          "findblock:grey_192:panascais_end:end_stone_quartz_ore"
         ]
       }
     }

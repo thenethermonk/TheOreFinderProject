@@ -22,7 +22,8 @@
           "findblock:red:minecraft:redstone_ore",
           "findblock:red:minecraft:deepslate_redstone_ore",
           "findblock:red:minecraft:lit_redstone_ore",
-          "findblock:red:minecraft:lit_deepslate_redstone_ore"
+          "findblock:red:minecraft:lit_deepslate_redstone_ore",
+          "findblock:red:panascais_end:end_stone_redstone_ore"
         ]
       }
     }

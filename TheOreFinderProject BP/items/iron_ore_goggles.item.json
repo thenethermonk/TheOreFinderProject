@@ -21,7 +21,8 @@
           "the_ore_finder_project:goggles",
           "findblock:grey_192:minecraft:iron_ore",
           "findblock:grey_192:minecraft:deepslate_iron_ore",
-          "findblock:grey_192:minecraft:raw_iron_block"
+          "findblock:grey_192:minecraft:raw_iron_block",
+          "findblock:grey_192:panascais_end:end_stone_iron_ore"
         ]
       }
     }

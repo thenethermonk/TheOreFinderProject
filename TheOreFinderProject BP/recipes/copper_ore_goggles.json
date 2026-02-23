@@ -1,20 +1,14 @@
 {
-  "format_version": "1.12",
+  "format_version": "1.16",
   "minecraft:recipe_shapeless": {
     "description": {
       "identifier": "the_ore_finder_project:copper_ore_goggles_recipe"
     },
     "tags": ["crafting_table"],
     "ingredients": [
-      {
-        "item": "minecraft:raw_copper"
-      },
-      {
-        "item": "minecraft:leather"
-      },
-      {
-        "item": "minecraft:spider_eye"
-      }
+      { "item": "minecraft:copper_ingot" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:spider_eye" }
     ],
     "result": {
       "item": "the_ore_finder_project:copper_ore_goggles",

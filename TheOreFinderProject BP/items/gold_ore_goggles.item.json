@@ -22,7 +22,8 @@
           "findblock:yellow:minecraft:gold_ore",
           "findblock:yellow:minecraft:deepslate_gold_ore",
           "findblock:yellow:minecraft:nether_gold_ore",
-          "findblock:yellow:minecraft:raw_gold_block"
+          "findblock:yellow:minecraft:raw_gold_block",
+          "findblock:yellow:panascais_end:end_stone_gold_ore"
         ]
       }
     }

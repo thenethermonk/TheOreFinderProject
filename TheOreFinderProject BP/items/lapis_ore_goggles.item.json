@@ -20,7 +20,8 @@
         "tags": [
           "the_ore_finder_project:goggles",
           "findblock:blue:minecraft:lapis_ore",
-          "findblock:blue:minecraft:deepslate_lapis_ore"
+          "findblock:blue:minecraft:deepslate_lapis_ore",
+          "findblock:blue:panascais_end:end_stone_lapis_ore"
         ]
       }
     }

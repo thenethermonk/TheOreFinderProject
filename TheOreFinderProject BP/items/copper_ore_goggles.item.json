@@ -21,7 +21,8 @@
           "the_ore_finder_project:goggles",
           "findblock:orange:minecraft:copper_ore",
           "findblock:orange:minecraft:deepslate_copper_ore",
-          "findblock:orange:minecraft:raw_copper_block"
+          "findblock:orange:minecraft:raw_copper_block",
+          "findblock:orange:panascais_end:end_stone_copper_ore"
         ]
       }
     }

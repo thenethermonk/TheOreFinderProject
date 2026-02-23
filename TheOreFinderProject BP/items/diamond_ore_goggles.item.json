@@ -20,7 +20,8 @@
         "tags": [
           "the_ore_finder_project:goggles",
           "findblock:cyan:minecraft:diamond_ore",
-          "findblock:cyan:minecraft:deepslate_diamond_ore"
+          "findblock:cyan:minecraft:deepslate_diamond_ore",
+          "findblock:cyan:panascais_end:end_stone_diamond_ore"
         ]
       }
     }
