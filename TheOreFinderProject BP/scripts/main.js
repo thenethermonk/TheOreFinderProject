@@ -391,66 +391,6 @@ function build_lore(item) {
     }
     item.setLore(lore);
 }
-system.beforeEvents.startup.subscribe((initEvent) => {
-    initEvent.blockComponentRegistry.registerCustomComponent("the_ore_finder_project:ore_finder_component", {
-        onPlace(arg) {
-            let pos = arg.block.location;
-            let tags = arg.block.getTags();
-            let the_name = arg.block.type.id;
-            let players = world
-                .getPlayers()
-                .filter((p) => p.getDynamicProperty(the_name + "_color") !== undefined);
-            const playersWithDistance = players.map((player) => ({
-                player: player,
-                distance: calculateDistance(player.location, pos),
-            }));
-            playersWithDistance.sort((a, b) => a.distance - b.distance);
-            players = playersWithDistance.map((item) => item.player);
-            if (players[0] == undefined) {
-                return false;
-            }
-            let p = players[0];
-            const the_color = p.getDynamicProperty(the_name + "_color");
-            const the_indicator = p.getDynamicProperty(the_name + "_indicator");
-            the_name = the_name.substring(the_name.indexOf(":") + 1);
-            the_name = the_name.replace("minecraft:", "");
-            the_name = the_name.replace("lit_", "");
-            let block_name = the_name;
-            the_name = the_name.replace("deepslate_", "");
-            the_name = the_name.replace("nether_", "");
-            the_name = the_name.replace("raw_", "");
-            the_name = the_name.replace("_block", "");
-            the_name = the_name.replace("_ore", "");
-            let entTypeId = "the_ore_finder_project:" + the_indicator + "_indicator_entity";
-            let entlist = arg.dimension.getEntitiesAtBlockLocation(pos);
-            let ent = entlist.find((e) => e.hasTag("torp_entity"));
-            if (ent !== undefined) {
-                if (ent.typeId != entTypeId) {
-                    ent.kill();
-                    ent = undefined;
-                }
-            }
-            if (ent === undefined) {
-                pos.x += 0.5;
-                pos.y += 0.5;
-                pos.z += 0.5;
-                const dist = distanceFromPlayer(p, pos);
-                if (dist > MIN_DISTANCE) {
-                    const ore = arg.dimension.spawnEntity(entTypeId, pos);
-                    if (the_indicator == "ore") {
-                        ore.triggerEvent("the_ore_finder_project:" + block_name);
-                    }
-                    else {
-                        ore.triggerEvent("the_ore_finder_project:" + the_color);
-                    }
-                    ore.addTag("torp_entity");
-                    ore.addTag("visible");
-                    ore.addTag(arg.block.type.id);
-                }
-            }
-        },
-    });
-});
 function buildIndicatorEntity(pos) {
     let p = getClosestPlayer(pos);
     let the_block = p.dimension.getBlock(pos);
