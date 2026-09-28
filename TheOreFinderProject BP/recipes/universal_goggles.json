@@ -4,8 +4,15 @@
     "description": {
       "identifier": "the_ore_finder_project:universal_goggles_recipe"
     },
+    "priority": 1,
+    "group": "Ore Goggles",
     "tags": ["crafting_table"],
     "ingredients": [
+      { "item": "the_ore_finder_project:overworld_goggles" },
+      { "item": "the_ore_finder_project:ancient_debris_goggles" },
+      { "item": "the_ore_finder_project:quartz_ore_goggles" }
+    ],
+    "unlock": [
       { "item": "the_ore_finder_project:overworld_goggles" },
       { "item": "the_ore_finder_project:ancient_debris_goggles" },
       { "item": "the_ore_finder_project:quartz_ore_goggles" }

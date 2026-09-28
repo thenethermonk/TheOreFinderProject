@@ -1,0 +1,24 @@
+{
+  "resource_pack_name": "the_ore_finder_project",
+  "texture_data": {
+    "ee_viridian_ore_goggles": {
+      "textures": "textures/items/ee_viridian_ore_goggles.png"
+    },
+    "ee_purpurite_ore_goggles": {
+      "textures": "textures/items/ee_purpurite_ore_goggles.png"
+    },
+    "ee_dark_purpurite_ore_goggles": {
+      "textures": "textures/items/ee_dark_purpurite_ore_goggles.png"
+    },
+    "ee_ametrine_ore_goggles": {
+      "textures": "textures/items/ee_ametrine_ore_goggles.png"
+    },
+    "ee_eternal_debris_goggles": {
+      "textures": "textures/items/ee_eternal_debris_goggles.png"
+    },
+    "ee_eternal_end_goggles": {
+      "textures": "textures/items/ee_eternal_end_goggles.png"
+    }
+  },
+  "texture_name": "atlas.items"
+}

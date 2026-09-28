@@ -5,7 +5,7 @@
       "identifier": "the_ore_finder_project:overworld_goggles",
       "menu_category": {
         "category": "equipment",
-        "group": "itemGroup.name.helmet"
+        "group": "goggles"
       }
     },
     "components": {
@@ -34,9 +34,9 @@
           "findblock:yellow:minecraft:deepslate_gold_ore",
           "findblock:yellow:minecraft:nether_gold_ore",
           "findblock:yellow:minecraft:raw_gold_block",
-          "findblock:grey_192:minecraft:iron_ore",
-          "findblock:grey_192:minecraft:deepslate_iron_ore",
-          "findblock:grey_192:minecraft:raw_iron_block",
+          "findblock:grey_128:minecraft:iron_ore",
+          "findblock:grey_128:minecraft:deepslate_iron_ore",
+          "findblock:grey_128:minecraft:raw_iron_block",
           "findblock:blue:minecraft:lapis_ore",
           "findblock:blue:minecraft:deepslate_lapis_ore",
           "findblock:red:minecraft:redstone_ore",
@@ -48,7 +48,7 @@
           "findblock:cyan:panascais_end:end_stone_diamond_ore",
           "findblock:green:panascais_end:end_stone_emerald_ore",
           "findblock:yellow:panascais_end:end_stone_gold_ore",
-          "findblock:grey_192:panascais_end:end_stone_iron_ore",
+          "findblock:grey_128:panascais_end:end_stone_iron_ore",
           "findblock:blue:panascais_end:end_stone_lapis_ore",
           "findblock:red:panascais_end:end_stone_redstone_ore"
         ]

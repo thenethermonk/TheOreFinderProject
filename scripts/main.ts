@@ -7,11 +7,24 @@ import {
   EntityEquippableComponent,
   Vector3,
   BlockVolume,
+  BlockTypes,
 } from "@minecraft/server"
 import { ModalFormData } from "@minecraft/server-ui"
 
 // minimum distance from player to indicator entities before they get removed
 const MIN_DISTANCE = 0
+
+let other_addons: string[] = []
+
+world.afterEvents.worldLoad.subscribe((event) => {
+  // check for Eternal End addon, if the end_stone_diamond_ore block exists, we know it's installed so we can add it to the options
+  if (BlockTypes.get("panascais_end:end_stone_diamond_ore") !== undefined) {
+    other_addons.push("Eternal End")
+  }
+
+  console.warn(JSON.stringify(other_addons))
+  console.warn("test")
+})
 
 /**
  * this runInterval is set to run 4 times a second
@@ -24,6 +37,10 @@ system.runInterval(() => {
   if (players.length == 0) return
 
   players.forEach((player) => {
+    /*player.runCommand(
+      "/recipe give @s the_ore_finder_project:iron_ore_goggles_recipe",
+    )*/
+
     player.runCommand(
       'execute as @a at @s run fill ~6 ~6 ~6 ~-6 ~-2 ~-6 air replace light_block ["block_light_level"=9]',
     )
@@ -157,6 +174,13 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
         quartz: true,
         ancient_debris: true,
       },
+      ee_ores: {
+        ametrine: true,
+        dark_purpurite: true,
+        purpurite: true,
+        viridian: true,
+        eternal_debris: true,
+      },
     }
 
     if (item.getDynamicProperty("options") != undefined) {
@@ -226,6 +250,13 @@ function getEquipmentOptions(p: Player, slot: EquipmentSlot) {
               find_blocks.push(block_name)
             }
           }
+        } else if (name == "the_ore_finder_project:eternal_end_goggles") {
+          for (const [key, value] of Object.entries(options.ee_ores)) {
+            if (block_name.includes(key) && value === true) {
+              //if (key == the_name && value === true) {
+              find_blocks.push(block_name)
+            }
+          }
         } else {
           find_blocks.push(block_name)
         }
@@ -264,7 +295,7 @@ world.afterEvents.playerLeave.subscribe((event) => {
 })
 
 /**
- * function find_blocks is the core of the addon, it does a fill replace around the player based on the options passed to it
+ * function find_blocks is the core of the addon
  *
  * @param player
  * @param block_names
@@ -276,38 +307,53 @@ function find_blocks(
   double_distance = false,
 ) {
   if (block_names !== undefined) {
-    // cycle through the block names that need to be replaced
+    let filtered_block_names: string[] = []
+
+    // filter out block names that don't exist, this is important for detecting blocks from other addons that might not be installed
     block_names.forEach((full_name: string) => {
-      let d = 15
-      if (double_distance) {
-        d = 30
+      if (BlockTypes.get(full_name) !== undefined) {
+        filtered_block_names.push(full_name)
       }
-      let bv = new BlockVolume(
-        {
-          x: player.location.x - d,
-          y: player.location.y - d,
-          z: player.location.z - d,
-        },
-        {
-          x: player.location.x + d,
-          y: player.location.y + d,
-          z: player.location.z + d,
-        },
-      )
-      let list = player.dimension.getBlocks(
-        bv,
-        { includeTypes: [full_name] },
-        true,
-      )
-      let locations = list.getBlockLocationIterator()
-      let loc = locations.next()
-      while (!loc.done) {
-        buildIndicatorEntity(loc.value)
-        loc = locations.next()
-      }
-      let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`
+    })
+
+    // set distance based on whether double distance is enabled
+    let d = 15
+    if (double_distance) {
+      d = 30
+    }
+
+    // build a block volume around the player based on the distance
+    let bv = new BlockVolume(
+      {
+        x: player.location.x - d,
+        y: player.location.y - d,
+        z: player.location.z - d,
+      },
+      {
+        x: player.location.x + d,
+        y: player.location.y + d,
+        z: player.location.z + d,
+      },
+    )
+
+    // get all blocks in the block volume that match the block names, then build indicator entities for them
+    let list = player.dimension.getBlocks(
+      bv,
+      { includeTypes: filtered_block_names },
+      true,
+    )
+    let locations = list.getBlockLocationIterator()
+    let loc = locations.next()
+    while (!loc.done) {
+      buildIndicatorEntity(loc.value)
+      loc = locations.next()
+    }
+
+    // cycle through the block names that need to be replaced and add the visible tag to any entities that match the block name and are within the area, this is used to prevent killing indicator entities that are still valid while allowing us to kill ones that are no longer valid without needing to track them individually
+    let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`
+    filtered_block_names.forEach((name: string) => {
       player.runCommand(
-        `execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`,
+        `execute as @s run tag @e[tag=torp_entity, tag=${name}, ${tag_range}] add visible`,
       )
     })
   }
@@ -369,6 +415,21 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
       redstone: true,
       quartz: true,
       ancient_debris: true,
+    },
+    ee_ores: {
+      copper: true,
+      gold: true,
+      iron: true,
+      diamond: true,
+      emerald: true,
+      lapis: true,
+      redstone: true,
+      quartz: true,
+      ametrine: true,
+      dark_purpurite: true,
+      purpurite: true,
+      viridian: true,
+      eternal_debris: true,
     },
   }
   let effects = ["None", "Dynamic Torch"]
@@ -454,6 +515,40 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
       defaultValue: options.ores.ancient_debris,
     })
   }
+  // eternal end goggles need to also toggle EE ores
+  else if (item.typeId == "the_ore_finder_project:eternal_end_goggles") {
+    modalForm.divider()
+    modalForm.label("Find Ores§6")
+    modalForm.toggle("§nCopper Ore§6", { defaultValue: options.ee_ores.copper })
+    modalForm.toggle("§pGold Ore§6", { defaultValue: options.ee_ores.gold })
+    modalForm.toggle("§iIron Ore§6", { defaultValue: options.ee_ores.iron })
+    modalForm.toggle("§sDiamond Ore§6", {
+      defaultValue: options.ee_ores.diamond,
+    })
+    modalForm.toggle("§qEmerald Ore§6", {
+      defaultValue: options.ee_ores.emerald,
+    })
+    modalForm.toggle("§tLapis Lazuli§6", {
+      defaultValue: options.ee_ores.lapis,
+    })
+    modalForm.toggle("§mRedstone§6", { defaultValue: options.ee_ores.redstone })
+    modalForm.toggle("§hQuartz§6", { defaultValue: options.ee_ores.quartz })
+    modalForm.toggle("§3Viridian Ore§6", {
+      defaultValue: options.ee_ores.viridian,
+    })
+    modalForm.toggle("§dPurpurite Ore§6", {
+      defaultValue: options.ee_ores.purpurite,
+    })
+    modalForm.toggle("§5Dark Purpurite Ore§6", {
+      defaultValue: options.ee_ores.dark_purpurite,
+    })
+    modalForm.toggle("§6Ametrine Ore§6", {
+      defaultValue: options.ee_ores.ametrine,
+    })
+    modalForm.toggle("§fEternal Debris§6", {
+      defaultValue: options.ee_ores.eternal_debris,
+    })
+  }
 
   // because form labels and dividers are counted as formValues, we need to compensate for them
   let start = 0
@@ -473,6 +568,7 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
           effect: formData.formValues[start],
           indicator: formData.formValues[start + 1],
           ores: {},
+          ee_ores: {},
         }
         // NOTE, right now dividers and lables count as value so we skip 2 fields
         if (
@@ -501,6 +597,26 @@ function showGoggleOptions(player: Player, item: ContainerSlot) {
               ...saveOptions.ores,
               quartz: formData.formValues[start + 14],
               ancient_debris: formData.formValues[start + 15],
+            },
+          }
+        }
+        if (item.typeId == "the_ore_finder_project:eternal_end_goggles") {
+          saveOptions = {
+            ...saveOptions,
+            ee_ores: {
+              copper: formData.formValues[start + 5],
+              gold: formData.formValues[start + 6],
+              iron: formData.formValues[start + 7],
+              diamond: formData.formValues[start + 8],
+              emerald: formData.formValues[start + 9],
+              lapis: formData.formValues[start + 10],
+              redstone: formData.formValues[start + 11],
+              quartz: formData.formValues[start + 12],
+              viridian: formData.formValues[start + 13],
+              purpurite: formData.formValues[start + 14],
+              dark_purpurite: formData.formValues[start + 15],
+              ametrine: formData.formValues[start + 16],
+              eternal_debris: formData.formValues[start + 17],
             },
           }
         }
@@ -576,13 +692,15 @@ function buildIndicatorEntity(pos: Vector3) {
       // trigger event to set the color/texture
       if (the_indicator == "ore") {
         try {
-          ore.triggerEvent("the_ore_finder_project:" + the_block.type.id)
-        } catch {
+          let name = the_block.type.id
+          name = name.replace("lit_", "")
+          ore.triggerEvent("the_ore_finder_project:" + name)
+        } catch (e) {
           // if ore event doesn't exist, rebuild the entity with box indicator
-          ore = p.dimension.spawnEntity(
+          /*ore = p.dimension.spawnEntity(
             "the_ore_finder_project:box_indicator_entity",
             pos,
-          )
+          )*/
           ore.triggerEvent("the_ore_finder_project:" + the_color)
         }
       } else {

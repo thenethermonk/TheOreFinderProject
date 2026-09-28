@@ -1,0 +1,26 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:crafting_items_catalog": {
+    "categories": [
+      {
+        "category_name": "equipment",
+        "groups": [
+          {
+            "group_identifier": {
+              "icon": "the_ore_finder_project:eternal_end_goggles",
+              "name": "the_ore_finder_project:goggles"
+            },
+            "items": [
+              "the_ore_finder_project:ametrine_ore_goggles",
+              "the_ore_finder_project:dark_purpurite_ore_goggles",
+              "the_ore_finder_project:purpurite_ore_goggles",
+              "the_ore_finder_project:eternal_debris_goggles",
+              "the_ore_finder_project:viridian_ore_goggles",
+              "the_ore_finder_project:eternal_end_goggles"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

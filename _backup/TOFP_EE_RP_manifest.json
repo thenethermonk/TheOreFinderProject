@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Add Eternal End ores to TOFP.\n§b1.21.100+ §7- by §dThe Nether Monk §7- §gv1.1.4",
+    "name": "§2TOFP - Eternal End - DRP",
+    "uuid": "6508ff30-7eb0-4cf5-ac6c-515defbf3a58",
+    "version": [1, 1, 4],
+    "min_engine_version": [1, 21, 20]
+  },
+  "dependencies": [
+    {
+      "uuid": "56ce5803-d214-41ef-b801-722140e7f2aa",
+      "version": [1, 1, 4]
+    }
+  ],
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "0ffec8e6-af74-4e40-9f23-5d6282c20d0a",
+      "version": [1, 0, 0]
+    }
+  ],
+  "metadata": {
+    "authors": ["The Nether Monk"],
+    "license": "MIT",
+    "url": "https://www.curseforge.com/minecraft-bedrock/addons/the-ore-finder-project",
+    "product_type": "addon"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "format_version": "1.16",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "the_ore_finder_project:dark_purpurite_ore_goggles_recipe"
+    },
+    "priority": 1,
+    "group": "Ore Goggles",
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "panascais_end:dark_purpurite_ore" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:spider_eye" }
+    ],
+    "unlock": [{ "item": "panascais_end:dark_purpurite_ore" }],
+    "result": {
+      "item": "the_ore_finder_project:dark_purpurite_ore_goggles",
+      "count": 1
+    }
+  }
+}

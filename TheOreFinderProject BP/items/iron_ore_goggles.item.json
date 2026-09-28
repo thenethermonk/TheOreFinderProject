@@ -5,7 +5,7 @@
       "identifier": "the_ore_finder_project:iron_ore_goggles",
       "menu_category": {
         "category": "equipment",
-        "group": "itemGroup.name.helmet"
+        "group": "goggles"
       }
     },
     "components": {
@@ -19,10 +19,10 @@
       "minecraft:tags": {
         "tags": [
           "the_ore_finder_project:goggles",
-          "findblock:grey_192:minecraft:iron_ore",
-          "findblock:grey_192:minecraft:deepslate_iron_ore",
-          "findblock:grey_192:minecraft:raw_iron_block",
-          "findblock:grey_192:panascais_end:end_stone_iron_ore"
+          "findblock:grey_128:minecraft:iron_ore",
+          "findblock:grey_128:minecraft:deepslate_iron_ore",
+          "findblock:grey_128:minecraft:raw_iron_block",
+          "findblock:grey_128:panascais_end:end_stone_iron_ore"
         ]
       }
     }

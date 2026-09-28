@@ -1,29 +1,41 @@
+## Vanilla Goggles
+
 item.the_ore_finder_project:ancient_debris_goggles=Ancient Debris Goggles
+the_ore_finder_project:ancient_debris_goggles_options=Ancient Debris Goggles - Options
+
 item.the_ore_finder_project:budding_amethyst_goggles=Amethyst Goggles
+the_ore_finder_project:budding_amethyst_goggles_options=Amethyst Goggles - Options
+
 item.the_ore_finder_project:coal_ore_goggles=Coal Ore Goggles
+the_ore_finder_project:coal_ore_goggles_options=Coal Ore Goggles - Options
+
 item.the_ore_finder_project:copper_ore_goggles=Copper Ore Goggles
+the_ore_finder_project:copper_ore_goggles_options=Copper Ore Goggles - Options
+
 item.the_ore_finder_project:diamond_ore_goggles=Diamond Ore Goggles
+the_ore_finder_project:diamond_ore_goggles_options=Diamond Ore Goggles - Options
+
 item.the_ore_finder_project:emerald_ore_goggles=Emerald Ore Goggles
+the_ore_finder_project:emerald_ore_goggles_options=Emerald Ore Goggles - Options
+
 item.the_ore_finder_project:gold_ore_goggles=Gold Ore Goggles
+the_ore_finder_project:gold_ore_goggles_options=Gold Ore Goggles - Options
+
 item.the_ore_finder_project:iron_ore_goggles=Iron Ore Goggles
+the_ore_finder_project:iron_ore_goggles_options=Iron Ore Goggles - Options
+
 item.the_ore_finder_project:lapis_ore_goggles=Lapis Ore Goggles
+the_ore_finder_project:lapis_ore_goggles_options=Lapis Ore Goggles - Options
+
 item.the_ore_finder_project:quartz_ore_goggles=Quartz Ore Goggles
+the_ore_finder_project:quartz_ore_goggles_options=Quartz Ore Goggles - Options
+
 item.the_ore_finder_project:redstone_ore_goggles=Redstone Ore Goggles
+the_ore_finder_project:redstone_ore_goggles_options=Redstone Ore Goggles - Options
 
 item.the_ore_finder_project:overworld_goggles=Overworld Goggles
-item.the_ore_finder_project:universal_goggles=Universal Goggles
-
-the_ore_finder_project:ancient_debris_goggles_options=Ancient Debris Goggles - Options
-the_ore_finder_project:budding_amethyst_goggles_options=Amethyst Goggles - Options
-the_ore_finder_project:coal_ore_goggles_options=Coal Ore Goggles - Options
-the_ore_finder_project:copper_ore_goggles_options=Copper Ore Goggles - Options
-the_ore_finder_project:diamond_ore_goggles_options=Diamond Ore Goggles - Options
-the_ore_finder_project:emerald_ore_goggles_options=Emerald Ore Goggles - Options
-the_ore_finder_project:gold_ore_goggles_options=Gold Ore Goggles - Options
-the_ore_finder_project:iron_ore_goggles_options=Iron Ore Goggles - Options
-the_ore_finder_project:lapis_ore_goggles_options=Lapis Ore Goggles - Options
-the_ore_finder_project:quartz_ore_goggles_options=Quartz Ore Goggles - Options
-the_ore_finder_project:redstone_ore_goggles_options=Redstone Ore Goggles - Options
 the_ore_finder_project:overworld_goggles_options=Overworld Goggles - Options
+
+item.the_ore_finder_project:universal_goggles=Universal Goggles
 the_ore_finder_project:universal_goggles_options=Universal Goggles - Options
 

@@ -1,6 +1,14 @@
-import { world, system, EquipmentSlot, BlockVolume, } from "@minecraft/server";
+import { world, system, EquipmentSlot, BlockVolume, BlockTypes, } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 const MIN_DISTANCE = 0;
+let other_addons = [];
+world.afterEvents.worldLoad.subscribe((event) => {
+    if (BlockTypes.get("panascais_end:end_stone_diamond_ore") !== undefined) {
+        other_addons.push("Eternal End");
+    }
+    console.warn(JSON.stringify(other_addons));
+    console.warn("test");
+});
 system.runInterval(() => {
     const players = world.getPlayers();
     if (players.length == 0)
@@ -96,6 +104,13 @@ function getEquipmentOptions(p, slot) {
                 quartz: true,
                 ancient_debris: true,
             },
+            ee_ores: {
+                ametrine: true,
+                dark_purpurite: true,
+                purpurite: true,
+                viridian: true,
+                eternal_debris: true,
+            },
         };
         if (item.getDynamicProperty("options") != undefined) {
             options_string = item.getDynamicProperty("options");
@@ -149,6 +164,13 @@ function getEquipmentOptions(p, slot) {
                         }
                     }
                 }
+                else if (name == "the_ore_finder_project:eternal_end_goggles") {
+                    for (const [key, value] of Object.entries(options.ee_ores)) {
+                        if (block_name.includes(key) && value === true) {
+                            find_blocks.push(block_name);
+                        }
+                    }
+                }
                 else {
                     find_blocks.push(block_name);
                 }
@@ -181,29 +203,35 @@ world.afterEvents.playerLeave.subscribe((event) => {
 });
 function find_blocks(player, block_names, double_distance = false) {
     if (block_names !== undefined) {
+        let filtered_block_names = [];
         block_names.forEach((full_name) => {
-            let d = 15;
-            if (double_distance) {
-                d = 30;
+            if (BlockTypes.get(full_name) !== undefined) {
+                filtered_block_names.push(full_name);
             }
-            let bv = new BlockVolume({
-                x: player.location.x - d,
-                y: player.location.y - d,
-                z: player.location.z - d,
-            }, {
-                x: player.location.x + d,
-                y: player.location.y + d,
-                z: player.location.z + d,
-            });
-            let list = player.dimension.getBlocks(bv, { includeTypes: [full_name] }, true);
-            let locations = list.getBlockLocationIterator();
-            let loc = locations.next();
-            while (!loc.done) {
-                buildIndicatorEntity(loc.value);
-                loc = locations.next();
-            }
-            let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`;
-            player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${full_name}, ${tag_range}] add visible`);
+        });
+        let d = 15;
+        if (double_distance) {
+            d = 30;
+        }
+        let bv = new BlockVolume({
+            x: player.location.x - d,
+            y: player.location.y - d,
+            z: player.location.z - d,
+        }, {
+            x: player.location.x + d,
+            y: player.location.y + d,
+            z: player.location.z + d,
+        });
+        let list = player.dimension.getBlocks(bv, { includeTypes: filtered_block_names }, true);
+        let locations = list.getBlockLocationIterator();
+        let loc = locations.next();
+        while (!loc.done) {
+            buildIndicatorEntity(loc.value);
+            loc = locations.next();
+        }
+        let tag_range = `x=~-${d}, dx=${d * 2}, y=~-${d}, dy=${d * 2}, z=~-${d}, dz=${d * 2}`;
+        filtered_block_names.forEach((name) => {
+            player.runCommand(`execute as @s run tag @e[tag=torp_entity, tag=${name}, ${tag_range}] add visible`);
         });
     }
 }
@@ -238,6 +266,21 @@ function showGoggleOptions(player, item) {
             redstone: true,
             quartz: true,
             ancient_debris: true,
+        },
+        ee_ores: {
+            copper: true,
+            gold: true,
+            iron: true,
+            diamond: true,
+            emerald: true,
+            lapis: true,
+            redstone: true,
+            quartz: true,
+            ametrine: true,
+            dark_purpurite: true,
+            purpurite: true,
+            viridian: true,
+            eternal_debris: true,
         },
     };
     let effects = ["None", "Dynamic Torch"];
@@ -305,6 +348,39 @@ function showGoggleOptions(player, item) {
             defaultValue: options.ores.ancient_debris,
         });
     }
+    else if (item.typeId == "the_ore_finder_project:eternal_end_goggles") {
+        modalForm.divider();
+        modalForm.label("Find Ores§6");
+        modalForm.toggle("§nCopper Ore§6", { defaultValue: options.ee_ores.copper });
+        modalForm.toggle("§pGold Ore§6", { defaultValue: options.ee_ores.gold });
+        modalForm.toggle("§iIron Ore§6", { defaultValue: options.ee_ores.iron });
+        modalForm.toggle("§sDiamond Ore§6", {
+            defaultValue: options.ee_ores.diamond,
+        });
+        modalForm.toggle("§qEmerald Ore§6", {
+            defaultValue: options.ee_ores.emerald,
+        });
+        modalForm.toggle("§tLapis Lazuli§6", {
+            defaultValue: options.ee_ores.lapis,
+        });
+        modalForm.toggle("§mRedstone§6", { defaultValue: options.ee_ores.redstone });
+        modalForm.toggle("§hQuartz§6", { defaultValue: options.ee_ores.quartz });
+        modalForm.toggle("§3Viridian Ore§6", {
+            defaultValue: options.ee_ores.viridian,
+        });
+        modalForm.toggle("§dPurpurite Ore§6", {
+            defaultValue: options.ee_ores.purpurite,
+        });
+        modalForm.toggle("§5Dark Purpurite Ore§6", {
+            defaultValue: options.ee_ores.dark_purpurite,
+        });
+        modalForm.toggle("§6Ametrine Ore§6", {
+            defaultValue: options.ee_ores.ametrine,
+        });
+        modalForm.toggle("§fEternal Debris§6", {
+            defaultValue: options.ee_ores.eternal_debris,
+        });
+    }
     let start = 0;
     if (player.graphicsMode != "Deferred") {
         start = 2;
@@ -320,6 +396,7 @@ function showGoggleOptions(player, item) {
                 effect: formData.formValues[start],
                 indicator: formData.formValues[start + 1],
                 ores: {},
+                ee_ores: {},
             };
             if (item.typeId == "the_ore_finder_project:overworld_goggles" ||
                 item.typeId == "the_ore_finder_project:universal_goggles") {
@@ -345,6 +422,26 @@ function showGoggleOptions(player, item) {
                         ...saveOptions.ores,
                         quartz: formData.formValues[start + 14],
                         ancient_debris: formData.formValues[start + 15],
+                    },
+                };
+            }
+            if (item.typeId == "the_ore_finder_project:eternal_end_goggles") {
+                saveOptions = {
+                    ...saveOptions,
+                    ee_ores: {
+                        copper: formData.formValues[start + 5],
+                        gold: formData.formValues[start + 6],
+                        iron: formData.formValues[start + 7],
+                        diamond: formData.formValues[start + 8],
+                        emerald: formData.formValues[start + 9],
+                        lapis: formData.formValues[start + 10],
+                        redstone: formData.formValues[start + 11],
+                        quartz: formData.formValues[start + 12],
+                        viridian: formData.formValues[start + 13],
+                        purpurite: formData.formValues[start + 14],
+                        dark_purpurite: formData.formValues[start + 15],
+                        ametrine: formData.formValues[start + 16],
+                        eternal_debris: formData.formValues[start + 17],
                     },
                 };
             }
@@ -411,10 +508,11 @@ function buildIndicatorEntity(pos) {
             let ore = p.dimension.spawnEntity(entTypeId, pos);
             if (the_indicator == "ore") {
                 try {
-                    ore.triggerEvent("the_ore_finder_project:" + the_block.type.id);
+                    let name = the_block.type.id;
+                    name = name.replace("lit_", "");
+                    ore.triggerEvent("the_ore_finder_project:" + name);
                 }
-                catch {
-                    ore = p.dimension.spawnEntity("the_ore_finder_project:box_indicator_entity", pos);
+                catch (e) {
                     ore.triggerEvent("the_ore_finder_project:" + the_color);
                 }
             }

@@ -5,7 +5,7 @@
       "identifier": "the_ore_finder_project:gold_ore_goggles",
       "menu_category": {
         "category": "equipment",
-        "group": "itemGroup.name.helmet"
+        "group": "goggles"
       }
     },
     "components": {

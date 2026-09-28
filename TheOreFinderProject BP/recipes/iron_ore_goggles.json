@@ -4,12 +4,15 @@
     "description": {
       "identifier": "the_ore_finder_project:iron_ore_goggles_recipe"
     },
+    "priority": 1,
+    "group": "Ore Goggles",
     "tags": ["crafting_table"],
     "ingredients": [
-      { "item": "minecraft:iron_ingot" },
+      { "item": "minecraft:raw_iron" },
       { "item": "minecraft:leather" },
       { "item": "minecraft:spider_eye" }
     ],
+    "unlock": [{ "item": "minecraft:raw_iron" }],
     "result": {
       "item": "the_ore_finder_project:iron_ore_goggles",
       "count": 1

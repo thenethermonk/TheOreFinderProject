@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "the_ore_finder_project:eternal_debris_goggles",
+      "menu_category": {
+        "category": "equipment",
+        "group": "goggles"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "ee_eternal_debris_goggles",
+      "minecraft:allow_off_hand": true,
+      "minecraft:wearable": {
+        "slot": "slot.armor.head",
+        "protection": 0
+      },
+      "minecraft:tags": {
+        "tags": [
+          "the_ore_finder_project:goggles",
+          "findblock:white:panascais_end:eternal_debris"
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,8 @@
-{"format_version":"1.16.100",
-    "minecraft:texture_set":{
-        "color":"orange",
-        "metalness_emissive_roughness":"mer_08",
-        "heightmap":"orange"
-    }
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "orange",
+    "metalness_emissive_roughness": "mer_08",
+    "heightmap": "orange"
+  }
 }

@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:crafting_items_catalog": {
+    "categories": [
+      {
+        "category_name": "equipment",
+        "groups": [
+          {
+            "group_identifier": {
+              "icon": "the_ore_finder_project:universal_goggles",
+              "name": "the_ore_finder_project:goggles"
+            },
+            "items": [
+              "the_ore_finder_project:ancient_debris_goggles",
+              "the_ore_finder_project:budding_amethyst_goggles",
+              "the_ore_finder_project:coal_ore_goggles",
+              "the_ore_finder_project:copper_ore_goggles",
+              "the_ore_finder_project:diamond_ore_goggles",
+              "the_ore_finder_project:emerald_ore_goggles",
+              "the_ore_finder_project:gold_ore_goggles",
+              "the_ore_finder_project:iron_ore_goggles",
+              "the_ore_finder_project:lapis_ore_goggles",
+              "the_ore_finder_project:quartz_ore_goggles",
+              "the_ore_finder_project:redstone_ore_goggles",
+              "the_ore_finder_project:overworld_goggles",
+              "the_ore_finder_project:universal_goggles"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "the_ore_finder_project:eternal_end_goggles_recipe"
+    },
+    "priority": 1,
+    "group": "Ore Goggles",
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "the_ore_finder_project:ametrine_ore_goggles" },
+      { "item": "the_ore_finder_project:dark_purpurite_ore_goggles" },
+      { "item": "the_ore_finder_project:purpurite_ore_goggles" },
+      { "item": "the_ore_finder_project:viridian_ore_goggles" },
+      { "item": "the_ore_finder_project:eternal_debris_goggles" }
+    ],
+    "unlock": [
+      { "item": "the_ore_finder_project:ametrine_ore_goggles" },
+      { "item": "the_ore_finder_project:dark_purpurite_ore_goggles" },
+      { "item": "the_ore_finder_project:purpurite_ore_goggles" },
+      { "item": "the_ore_finder_project:viridian_ore_goggles" },
+      { "item": "the_ore_finder_project:eternal_debris_goggles" }
+    ],
+    "result": {
+      "item": "the_ore_finder_project:eternal_end_goggles",
+      "count": 1
+    }
+  }
+}

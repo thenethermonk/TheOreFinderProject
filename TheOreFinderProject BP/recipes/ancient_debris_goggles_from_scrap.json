@@ -1,0 +1,21 @@
+{
+  "format_version": "1.16",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "the_ore_finder_project:ancient_debris_goggles_from_scrap_recipe"
+    },
+    "priority": 2,
+    "group": "Ore Goggles",
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:netherite_scrap" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:spider_eye" }
+    ],
+    "unlock": [{ "item": "minecraft:netherite_scrap" }],
+    "result": {
+      "item": "the_ore_finder_project:ancient_debris_goggles",
+      "count": 1
+    }
+  }
+}
