@@ -6,8 +6,6 @@ world.afterEvents.worldLoad.subscribe((event) => {
     if (BlockTypes.get("panascais_end:end_stone_diamond_ore") !== undefined) {
         other_addons.push("Eternal End");
     }
-    console.warn(JSON.stringify(other_addons));
-    console.warn("test");
 });
 system.runInterval(() => {
     const players = world.getPlayers();

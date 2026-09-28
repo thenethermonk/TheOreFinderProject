@@ -8,7 +8,7 @@
           {
             "group_identifier": {
               "icon": "the_ore_finder_project:eternal_end_goggles",
-              "name": "the_ore_finder_project:goggles"
+              "name": "minecraft:goggles"
             },
             "items": [
               "the_ore_finder_project:ametrine_ore_goggles",

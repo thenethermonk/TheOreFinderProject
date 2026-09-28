@@ -22,8 +22,10 @@ world.afterEvents.worldLoad.subscribe((event) => {
     other_addons.push("Eternal End")
   }
 
-  console.warn(JSON.stringify(other_addons))
-  console.warn("test")
+  // I have verified this works, but I don't know of a way to disable/enable items based on it. Thus, EE upgrade addon is external
+
+  //console.warn(JSON.stringify(other_addons))
+  //console.warn("test")
 })
 
 /**
